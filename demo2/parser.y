@@ -3,6 +3,7 @@
 #include <stdio.h>
 #include <string.h>
 %}
+
 /* 声明 token 供后续使用, 同时也可以在 lex 中使用 */
 %token LF AND ARR BEG BOOL CALL CASE CHR CONST DIM DO ELSE END BOOLFALSE FOR IF INPUT INT NOT OF OR OUTPUT PROCEDURE PROGRAM READ REAL REPEAT SET STOP THEN TO BOOLTRUE UNTIL VAR WHILE WRITE 
 %token LB RB RCOMMENT LCOMMENT COMMA DOT TDOT COLON ASSIGNMENT SEMI LT LE NE EQ RT RE LC RC
@@ -12,15 +13,21 @@
 /* 最后列出的定义具有最高的优先级 */
 %left ADD SUB
 %left MUL DIV 
+
 /* 定义结构体, 使得 token 可以附带相应的数据信息(语义值) */
 %union {
     int num;
     char *str;
 }
+
 /* 指明不同 token 或者 规则 的数据类型 */
 %type <num> INTEGER exp
+
+
 /* 根据规定，YACC仅对第一条规则感兴趣, 或者使用 %start 符号指定的起始规则 */
 %start program
+
+
 %%
 
 program: line | line program;
