@@ -249,7 +249,7 @@ extern int yydebug;
 #if ! defined YYSTYPE && ! defined YYSTYPE_IS_DECLARED
 union YYSTYPE
 {
-#line 17 "parser.y"
+#line 16 "parser.y"
 
     int num;
     char *str;
@@ -566,7 +566,7 @@ static const yytype_uint8 yytranslate[] =
   /* YYRLINE[YYN] -- Source line where rule number YYN was defined.  */
 static const yytype_uint8 yyrline[] =
 {
-       0,    27,    27,    27,    28,    31,    37,    41,    45,    49
+       0,    26,    26,    26,    27,    30,    36,    40,    44,    48
 };
 #endif
 
@@ -1368,7 +1368,7 @@ yyreduce:
   switch (yyn)
     {
   case 4:
-#line 28 "parser.y"
+#line 27 "parser.y"
     {
         printf("ans: %d\n", (yyvsp[-1].num));
     }
@@ -1376,7 +1376,7 @@ yyreduce:
     break;
 
   case 5:
-#line 31 "parser.y"
+#line 30 "parser.y"
     { // 表达式可以为单个整数, 或 表达式+运算符+表达式
         /* $$ 表示该条规则所返回的语义值 */
         /* $1 $2 $3 ... 依次表示匹配到的 token 所具有的值 */
@@ -1388,7 +1388,7 @@ yyreduce:
     break;
 
   case 6:
-#line 37 "parser.y"
+#line 36 "parser.y"
     {
         puts("---> found rule 2: exp -> exp ADD exp");
         (yyval.num) = (yyvsp[-2].num) + (yyvsp[0].num);
@@ -1398,7 +1398,7 @@ yyreduce:
     break;
 
   case 7:
-#line 41 "parser.y"
+#line 40 "parser.y"
     {
         puts("---> found rule 3: exp -> exp SUB exp");
         (yyval.num) = (yyvsp[-2].num) - (yyvsp[0].num);
@@ -1408,7 +1408,7 @@ yyreduce:
     break;
 
   case 8:
-#line 45 "parser.y"
+#line 44 "parser.y"
     {
         puts("---> found rule 4: exp -> exp MUL exp");
         (yyval.num) = (yyvsp[-2].num) * (yyvsp[0].num);
@@ -1418,7 +1418,7 @@ yyreduce:
     break;
 
   case 9:
-#line 49 "parser.y"
+#line 48 "parser.y"
     {
         puts("---> found rule 5: exp -> exp DIV exp");
         (yyval.num) = (yyvsp[-2].num) / (yyvsp[0].num); // don't care div 0
@@ -1660,7 +1660,7 @@ yyreturn:
 #endif
   return yyresult;
 }
-#line 54 "parser.y"
+#line 53 "parser.y"
 
 
 int main() {

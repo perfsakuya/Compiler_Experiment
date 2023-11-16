@@ -1129,7 +1129,7 @@ case 60:
 YY_RULE_SETUP
 #line 87 "scanner.l"
 {  // 标识符
-    //++wordcount;
+    //可能需要一些类似    yylval.num = atoi(yytext); 的代码
     return id;
 }
 	YY_BREAK
@@ -1146,7 +1146,7 @@ case 62:
 YY_RULE_SETUP
 #line 95 "scanner.l"
 { //字符常数
-    //++wordcount;
+
     return TRUECHAR;
 }
 	YY_BREAK
