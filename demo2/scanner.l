@@ -84,7 +84,7 @@ write        return WRITE;
 
 
 {identifier} {  // 标识符
-    //++wordcount;
+    //可能需要一些类似    yylval.num = atoi(yytext); 的代码
     return id;
 }
 {integer}    {
@@ -92,7 +92,7 @@ write        return WRITE;
     return INTEGER;
 }
 {char_const} { //字符常数
-    //++wordcount;
+
     return TRUECHAR;
 }
 {false_char_const} { //错误字符常数
