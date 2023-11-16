@@ -35,6 +35,5 @@
 .vscode/
 
 # lex and yacc
-*.yy.c
-*.tab.c
-*.tab.h
+*.c
+*.h
