@@ -4,12 +4,15 @@
 #include <string.h>
 %}
 /* 声明 token 供后续使用, 同时也可以在 lex 中使用 */
-%token INTEGER
-%token LF
+%token LF AND ARR BEG BOOL CALL CASE CHR CONST DIM DO ELSE END BOOLFALSE FOR IF INPUT INT NOT OF OR OUTPUT PROCEDURE
+%token PROGRAM READ REAL REPEAT SET STOP THEN TO BOOLTRUE UNTIL VAR WHILE WRITE 
+%token LB RB RCOMMENT LCOMMENT COMMA DOT TDOT COLON ASSIGNMENT SEMI LT LE NE EQ RT RE LC RC
+%token INTEGER id TRUECHAR FALSECHAR TRUECOMMENT FALSECOMMENT ILLEGALCHR
+
 /* %left 表示左结合, %right 表示右结合 */
 /* 最后列出的定义具有最高的优先级 */
 %left ADD SUB
-%left MUL DIV
+%left MUL DIV 
 /* 定义结构体, 使得 token 可以附带相应的数据信息(语义值) */
 %union {
     int num;
@@ -20,6 +23,7 @@
 /* 根据规定，YACC仅对第一条规则感兴趣, 或者使用 %start 符号指定的起始规则 */
 %start program
 %%
+
 program: line | line program;
 line: exp LF {
         printf("ans: %d\n", $1);
@@ -48,6 +52,7 @@ exp: INTEGER { // 表达式可以为单个整数, 或 表达式+运算符+表达
         printf("---> %d / %d = %d\n", $1, $3, $$);
     };
 %%
+
 int main() {
     extern FILE *yyin;
     yyin = stdin;

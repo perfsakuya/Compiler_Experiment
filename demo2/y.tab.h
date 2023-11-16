@@ -49,32 +49,150 @@ extern int yydebug;
 # define YYTOKENTYPE
   enum yytokentype
   {
-    INTEGER = 258,
-    LF = 259,
-    ADD = 260,
-    SUB = 261,
-    MUL = 262,
-    DIV = 263
+    LF = 258,
+    AND = 259,
+    ARR = 260,
+    BEG = 261,
+    BOOL = 262,
+    CALL = 263,
+    CASE = 264,
+    CHR = 265,
+    CONST = 266,
+    DIM = 267,
+    DO = 268,
+    ELSE = 269,
+    END = 270,
+    BOOLFALSE = 271,
+    FOR = 272,
+    IF = 273,
+    INPUT = 274,
+    INT = 275,
+    NOT = 276,
+    OF = 277,
+    OR = 278,
+    OUTPUT = 279,
+    PROCEDURE = 280,
+    PROGRAM = 281,
+    READ = 282,
+    REAL = 283,
+    REPEAT = 284,
+    SET = 285,
+    STOP = 286,
+    THEN = 287,
+    TO = 288,
+    BOOLTRUE = 289,
+    UNTIL = 290,
+    VAR = 291,
+    WHILE = 292,
+    WRITE = 293,
+    LB = 294,
+    RB = 295,
+    RCOMMENT = 296,
+    LCOMMENT = 297,
+    COMMA = 298,
+    DOT = 299,
+    TDOT = 300,
+    COLON = 301,
+    ASSIGNMENT = 302,
+    SEMI = 303,
+    LT = 304,
+    LE = 305,
+    NE = 306,
+    EQ = 307,
+    RT = 308,
+    RE = 309,
+    LC = 310,
+    RC = 311,
+    INTEGER = 312,
+    id = 313,
+    TRUECHAR = 314,
+    FALSECHAR = 315,
+    TRUECOMMENT = 316,
+    FALSECOMMENT = 317,
+    ILLEGALCHR = 318,
+    ADD = 319,
+    SUB = 320,
+    MUL = 321,
+    DIV = 322
   };
 #endif
 /* Tokens.  */
-#define INTEGER 258
-#define LF 259
-#define ADD 260
-#define SUB 261
-#define MUL 262
-#define DIV 263
+#define LF 258
+#define AND 259
+#define ARR 260
+#define BEG 261
+#define BOOL 262
+#define CALL 263
+#define CASE 264
+#define CHR 265
+#define CONST 266
+#define DIM 267
+#define DO 268
+#define ELSE 269
+#define END 270
+#define BOOLFALSE 271
+#define FOR 272
+#define IF 273
+#define INPUT 274
+#define INT 275
+#define NOT 276
+#define OF 277
+#define OR 278
+#define OUTPUT 279
+#define PROCEDURE 280
+#define PROGRAM 281
+#define READ 282
+#define REAL 283
+#define REPEAT 284
+#define SET 285
+#define STOP 286
+#define THEN 287
+#define TO 288
+#define BOOLTRUE 289
+#define UNTIL 290
+#define VAR 291
+#define WHILE 292
+#define WRITE 293
+#define LB 294
+#define RB 295
+#define RCOMMENT 296
+#define LCOMMENT 297
+#define COMMA 298
+#define DOT 299
+#define TDOT 300
+#define COLON 301
+#define ASSIGNMENT 302
+#define SEMI 303
+#define LT 304
+#define LE 305
+#define NE 306
+#define EQ 307
+#define RT 308
+#define RE 309
+#define LC 310
+#define RC 311
+#define INTEGER 312
+#define id 313
+#define TRUECHAR 314
+#define FALSECHAR 315
+#define TRUECOMMENT 316
+#define FALSECOMMENT 317
+#define ILLEGALCHR 318
+#define ADD 319
+#define SUB 320
+#define MUL 321
+#define DIV 322
 
 /* Value type.  */
 #if ! defined YYSTYPE && ! defined YYSTYPE_IS_DECLARED
 union YYSTYPE
 {
-#line 14 "parser.y"
+#line 17 "parser.y"
 
     int num;
     char *str;
 
-#line 78 "y.tab.h"
+#line 196 "y.tab.h"
 
 };
 typedef union YYSTYPE YYSTYPE;

@@ -111,32 +111,150 @@ extern int yydebug;
 # define YYTOKENTYPE
   enum yytokentype
   {
-    INTEGER = 258,
-    LF = 259,
-    ADD = 260,
-    SUB = 261,
-    MUL = 262,
-    DIV = 263
+    LF = 258,
+    AND = 259,
+    ARR = 260,
+    BEG = 261,
+    BOOL = 262,
+    CALL = 263,
+    CASE = 264,
+    CHR = 265,
+    CONST = 266,
+    DIM = 267,
+    DO = 268,
+    ELSE = 269,
+    END = 270,
+    BOOLFALSE = 271,
+    FOR = 272,
+    IF = 273,
+    INPUT = 274,
+    INT = 275,
+    NOT = 276,
+    OF = 277,
+    OR = 278,
+    OUTPUT = 279,
+    PROCEDURE = 280,
+    PROGRAM = 281,
+    READ = 282,
+    REAL = 283,
+    REPEAT = 284,
+    SET = 285,
+    STOP = 286,
+    THEN = 287,
+    TO = 288,
+    BOOLTRUE = 289,
+    UNTIL = 290,
+    VAR = 291,
+    WHILE = 292,
+    WRITE = 293,
+    LB = 294,
+    RB = 295,
+    RCOMMENT = 296,
+    LCOMMENT = 297,
+    COMMA = 298,
+    DOT = 299,
+    TDOT = 300,
+    COLON = 301,
+    ASSIGNMENT = 302,
+    SEMI = 303,
+    LT = 304,
+    LE = 305,
+    NE = 306,
+    EQ = 307,
+    RT = 308,
+    RE = 309,
+    LC = 310,
+    RC = 311,
+    INTEGER = 312,
+    id = 313,
+    TRUECHAR = 314,
+    FALSECHAR = 315,
+    TRUECOMMENT = 316,
+    FALSECOMMENT = 317,
+    ILLEGALCHR = 318,
+    ADD = 319,
+    SUB = 320,
+    MUL = 321,
+    DIV = 322
   };
 #endif
 /* Tokens.  */
-#define INTEGER 258
-#define LF 259
-#define ADD 260
-#define SUB 261
-#define MUL 262
-#define DIV 263
+#define LF 258
+#define AND 259
+#define ARR 260
+#define BEG 261
+#define BOOL 262
+#define CALL 263
+#define CASE 264
+#define CHR 265
+#define CONST 266
+#define DIM 267
+#define DO 268
+#define ELSE 269
+#define END 270
+#define BOOLFALSE 271
+#define FOR 272
+#define IF 273
+#define INPUT 274
+#define INT 275
+#define NOT 276
+#define OF 277
+#define OR 278
+#define OUTPUT 279
+#define PROCEDURE 280
+#define PROGRAM 281
+#define READ 282
+#define REAL 283
+#define REPEAT 284
+#define SET 285
+#define STOP 286
+#define THEN 287
+#define TO 288
+#define BOOLTRUE 289
+#define UNTIL 290
+#define VAR 291
+#define WHILE 292
+#define WRITE 293
+#define LB 294
+#define RB 295
+#define RCOMMENT 296
+#define LCOMMENT 297
+#define COMMA 298
+#define DOT 299
+#define TDOT 300
+#define COLON 301
+#define ASSIGNMENT 302
+#define SEMI 303
+#define LT 304
+#define LE 305
+#define NE 306
+#define EQ 307
+#define RT 308
+#define RE 309
+#define LC 310
+#define RC 311
+#define INTEGER 312
+#define id 313
+#define TRUECHAR 314
+#define FALSECHAR 315
+#define TRUECOMMENT 316
+#define FALSECOMMENT 317
+#define ILLEGALCHR 318
+#define ADD 319
+#define SUB 320
+#define MUL 321
+#define DIV 322
 
 /* Value type.  */
 #if ! defined YYSTYPE && ! defined YYSTYPE_IS_DECLARED
 union YYSTYPE
 {
-#line 14 "parser.y"
+#line 17 "parser.y"
 
     int num;
     char *str;
 
-#line 140 "y.tab.c"
+#line 258 "y.tab.c"
 
 };
 typedef union YYSTYPE YYSTYPE;
@@ -386,10 +504,10 @@ union yyalloc
 /* YYFINAL -- State number of the termination state.  */
 #define YYFINAL  5
 /* YYLAST -- Last index in YYTABLE.  */
-#define YYLAST   13
+#define YYLAST   64
 
 /* YYNTOKENS -- Number of terminals.  */
-#define YYNTOKENS  9
+#define YYNTOKENS  68
 /* YYNNTS -- Number of nonterminals.  */
 #define YYNNTS  4
 /* YYNRULES -- Number of rules.  */
@@ -398,7 +516,7 @@ union yyalloc
 #define YYNSTATES  16
 
 #define YYUNDEFTOK  2
-#define YYMAXUTOK   263
+#define YYMAXUTOK   322
 
 /* YYTRANSLATE(TOKEN-NUM) -- Symbol number corresponding to TOKEN-NUM
    as returned by yylex, with out-of-bounds checking.  */
@@ -435,14 +553,20 @@ static const yytype_uint8 yytranslate[] =
        2,     2,     2,     2,     2,     2,     2,     2,     2,     2,
        2,     2,     2,     2,     2,     2,     2,     2,     2,     2,
        2,     2,     2,     2,     2,     2,     1,     2,     3,     4,
-       5,     6,     7,     8
+       5,     6,     7,     8,     9,    10,    11,    12,    13,    14,
+      15,    16,    17,    18,    19,    20,    21,    22,    23,    24,
+      25,    26,    27,    28,    29,    30,    31,    32,    33,    34,
+      35,    36,    37,    38,    39,    40,    41,    42,    43,    44,
+      45,    46,    47,    48,    49,    50,    51,    52,    53,    54,
+      55,    56,    57,    58,    59,    60,    61,    62,    63,    64,
+      65,    66,    67
 };
 
 #if YYDEBUG
   /* YYRLINE[YYN] -- Source line where rule number YYN was defined.  */
 static const yytype_uint8 yyrline[] =
 {
-       0,    23,    23,    23,    24,    27,    33,    37,    41,    45
+       0,    27,    27,    27,    28,    31,    37,    41,    45,    49
 };
 #endif
 
@@ -451,8 +575,15 @@ static const yytype_uint8 yyrline[] =
    First, the terminals, then, starting at YYNTOKENS, nonterminals.  */
 static const char *const yytname[] =
 {
-  "$end", "error", "$undefined", "INTEGER", "LF", "ADD", "SUB", "MUL",
-  "DIV", "$accept", "program", "line", "exp", YY_NULLPTR
+  "$end", "error", "$undefined", "LF", "AND", "ARR", "BEG", "BOOL",
+  "CALL", "CASE", "CHR", "CONST", "DIM", "DO", "ELSE", "END", "BOOLFALSE",
+  "FOR", "IF", "INPUT", "INT", "NOT", "OF", "OR", "OUTPUT", "PROCEDURE",
+  "PROGRAM", "READ", "REAL", "REPEAT", "SET", "STOP", "THEN", "TO",
+  "BOOLTRUE", "UNTIL", "VAR", "WHILE", "WRITE", "LB", "RB", "RCOMMENT",
+  "LCOMMENT", "COMMA", "DOT", "TDOT", "COLON", "ASSIGNMENT", "SEMI", "LT",
+  "LE", "NE", "EQ", "RT", "RE", "LC", "RC", "INTEGER", "id", "TRUECHAR",
+  "FALSECHAR", "TRUECOMMENT", "FALSECOMMENT", "ILLEGALCHR", "ADD", "SUB",
+  "MUL", "DIV", "$accept", "program", "line", "exp", YY_NULLPTR
 };
 #endif
 
@@ -461,14 +592,20 @@ static const char *const yytname[] =
    (internal) symbol number NUM (which must be that of a token).  */
 static const yytype_uint16 yytoknum[] =
 {
-       0,   256,   257,   258,   259,   260,   261,   262,   263
+       0,   256,   257,   258,   259,   260,   261,   262,   263,   264,
+     265,   266,   267,   268,   269,   270,   271,   272,   273,   274,
+     275,   276,   277,   278,   279,   280,   281,   282,   283,   284,
+     285,   286,   287,   288,   289,   290,   291,   292,   293,   294,
+     295,   296,   297,   298,   299,   300,   301,   302,   303,   304,
+     305,   306,   307,   308,   309,   310,   311,   312,   313,   314,
+     315,   316,   317,   318,   319,   320,   321,   322
 };
 # endif
 
-#define YYPACT_NINF -5
+#define YYPACT_NINF -62
 
 #define yypact_value_is_default(Yystate) \
-  (!!((Yystate) == (-5)))
+  (!!((Yystate) == (-62)))
 
 #define YYTABLE_NINF -1
 
@@ -479,8 +616,8 @@ static const yytype_uint16 yytoknum[] =
      STATE-NUM.  */
 static const yytype_int8 yypact[] =
 {
-       8,    -5,    12,     8,    -4,    -5,    -5,    -5,     8,     8,
-       8,     8,     2,     2,    -5,    -5
+     -50,   -62,     8,   -50,    -3,   -62,   -62,   -62,   -50,   -50,
+     -50,   -50,   -61,   -61,   -62,   -62
 };
 
   /* YYDEFACT[STATE-NUM] -- Default reduction number in state STATE-NUM.
@@ -495,7 +632,7 @@ static const yytype_uint8 yydefact[] =
   /* YYPGOTO[NTERM-NUM].  */
 static const yytype_int8 yypgoto[] =
 {
-      -5,    10,    -5,    -3
+     -62,     6,   -62,    -7
 };
 
   /* YYDEFGOTO[NTERM-NUM].  */
@@ -509,28 +646,38 @@ static const yytype_int8 yydefgoto[] =
      number is the opposite.  If YYTABLE_NINF, syntax error.  */
 static const yytype_uint8 yytable[] =
 {
-       7,     8,     9,    10,    11,    12,    13,    14,    15,    10,
-      11,     1,     5,     6
+       7,    12,    13,    14,    15,    10,    11,     1,     5,     6,
+       0,     0,     0,     0,     0,     0,     0,     0,     0,     0,
+       0,     0,     0,     0,     0,     0,     0,     0,     0,     0,
+       0,     0,     0,     0,     0,     0,     0,     0,     0,     0,
+       0,     0,     0,     0,     0,     0,     0,     0,     0,     0,
+       0,     0,     0,     0,     0,     0,     0,     0,     0,     0,
+       0,     8,     9,    10,    11
 };
 
-static const yytype_uint8 yycheck[] =
+static const yytype_int8 yycheck[] =
 {
-       4,     5,     6,     7,     8,     8,     9,    10,    11,     7,
-       8,     3,     0,     3
+       3,     8,     9,    10,    11,    66,    67,    57,     0,     3,
+      -1,    -1,    -1,    -1,    -1,    -1,    -1,    -1,    -1,    -1,
+      -1,    -1,    -1,    -1,    -1,    -1,    -1,    -1,    -1,    -1,
+      -1,    -1,    -1,    -1,    -1,    -1,    -1,    -1,    -1,    -1,
+      -1,    -1,    -1,    -1,    -1,    -1,    -1,    -1,    -1,    -1,
+      -1,    -1,    -1,    -1,    -1,    -1,    -1,    -1,    -1,    -1,
+      -1,    64,    65,    66,    67
 };
 
   /* YYSTOS[STATE-NUM] -- The (internal number of the) accessing
      symbol of state STATE-NUM.  */
 static const yytype_uint8 yystos[] =
 {
-       0,     3,    10,    11,    12,     0,    10,     4,     5,     6,
-       7,     8,    12,    12,    12,    12
+       0,    57,    69,    70,    71,     0,    69,     3,    64,    65,
+      66,    67,    71,    71,    71,    71
 };
 
   /* YYR1[YYN] -- Symbol number of symbol that rule YYN derives.  */
 static const yytype_uint8 yyr1[] =
 {
-       0,     9,    10,    10,    11,    12,    12,    12,    12,    12
+       0,    68,    69,    69,    70,    71,    71,    71,    71,    71
 };
 
   /* YYR2[YYN] -- Number of symbols on the right hand side of rule YYN.  */
@@ -1221,15 +1368,15 @@ yyreduce:
   switch (yyn)
     {
   case 4:
-#line 24 "parser.y"
+#line 28 "parser.y"
     {
         printf("ans: %d\n", (yyvsp[-1].num));
     }
-#line 1229 "y.tab.c"
+#line 1376 "y.tab.c"
     break;
 
   case 5:
-#line 27 "parser.y"
+#line 31 "parser.y"
     { // 表达式可以为单个整数, 或 表达式+运算符+表达式
         /* $$ 表示该条规则所返回的语义值 */
         /* $1 $2 $3 ... 依次表示匹配到的 token 所具有的值 */
@@ -1237,51 +1384,51 @@ yyreduce:
         (yyval.num) = (yyvsp[0].num);
         printf("---> %d\n", (yyvsp[0].num));
     }
-#line 1241 "y.tab.c"
+#line 1388 "y.tab.c"
     break;
 
   case 6:
-#line 33 "parser.y"
+#line 37 "parser.y"
     {
         puts("---> found rule 2: exp -> exp ADD exp");
         (yyval.num) = (yyvsp[-2].num) + (yyvsp[0].num);
         printf("---> %d + %d = %d\n", (yyvsp[-2].num), (yyvsp[0].num), (yyval.num));
     }
-#line 1251 "y.tab.c"
+#line 1398 "y.tab.c"
     break;
 
   case 7:
-#line 37 "parser.y"
+#line 41 "parser.y"
     {
         puts("---> found rule 3: exp -> exp SUB exp");
         (yyval.num) = (yyvsp[-2].num) - (yyvsp[0].num);
         printf("---> %d - %d = %d\n", (yyvsp[-2].num), (yyvsp[0].num), (yyval.num));
     }
-#line 1261 "y.tab.c"
+#line 1408 "y.tab.c"
     break;
 
   case 8:
-#line 41 "parser.y"
+#line 45 "parser.y"
     {
         puts("---> found rule 4: exp -> exp MUL exp");
         (yyval.num) = (yyvsp[-2].num) * (yyvsp[0].num);
         printf("---> %d * %d = %d\n", (yyvsp[-2].num), (yyvsp[0].num), (yyval.num));
     }
-#line 1271 "y.tab.c"
+#line 1418 "y.tab.c"
     break;
 
   case 9:
-#line 45 "parser.y"
+#line 49 "parser.y"
     {
         puts("---> found rule 5: exp -> exp DIV exp");
         (yyval.num) = (yyvsp[-2].num) / (yyvsp[0].num); // don't care div 0
         printf("---> %d / %d = %d\n", (yyvsp[-2].num), (yyvsp[0].num), (yyval.num));
     }
-#line 1281 "y.tab.c"
+#line 1428 "y.tab.c"
     break;
 
 
-#line 1285 "y.tab.c"
+#line 1432 "y.tab.c"
 
       default: break;
     }
@@ -1513,7 +1660,8 @@ yyreturn:
 #endif
   return yyresult;
 }
-#line 50 "parser.y"
+#line 54 "parser.y"
+
 
 int main() {
     extern FILE *yyin;

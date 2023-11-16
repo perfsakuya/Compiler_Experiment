@@ -24,67 +24,68 @@ false_comment [/][*].*
 
 [ \t\r\a]+     ; // 空白字符
 [\n]         return LF; // 换行符
-and          return 1;
-array        return 2;
-begin        return 3;
-bool         return 4;
-call         return 5;
-case         return 6;
-char         return 7;
-constant     return 8;
-dim          return 9;
-do           return 10;
-else         return 11;
-end          return 12;
-false        return 13;
-for          return 14;
-if           return 15;
-input        return 16;
-integer      return 17;
-not          return 18;
-of           return 19;
-or           return 20;
-output       return 21;
-procedure    return 22;
-program      return 23;
-read         return 24;
-real         return 25;
-repeat       return 26;
-set          return 27;
-stop         return 28;
-then         return 29;
-to           return 30;
-true         return 31;
-until        return 32;
-var          return 33;
-while        return 34;
-write        return 35;
-"("          return 39;
-")"          return 40;
+and          return AND;
+array        return ARR;
+begin        return BEG;
+bool         return BOOL;
+call         return CALL;
+case         return CASE;
+char         return CHR;
+constant     return CONST;
+dim          return DIM;
+do           return DO;
+else         return ELSE;
+end          return END;
+false        return BOOLFALSE;
+for          return FOR;
+if           return IF;
+input        return INPUT;
+integer      return INT;
+not          return NOT;
+of           return OF;
+or           return OR;
+output       return OUTPUT;
+procedure    return PROCEDURE;
+program      return PROGRAM;
+read         return READ;
+real         return REAL;
+repeat       return REPEAT;
+set          return SET;
+stop         return STOP;
+then         return THEN;
+to           return TO;
+true         return BOOLTRUE;
+until        return UNTIL;
+var          return VAR;
+while        return WHILE;
+write        return WRITE;
+"("          return LB;
+")"          return RB;
 "*"          return MUL;
-"*/"         return 42;
+"*/"         return RCOMMENT;
 "+"          return ADD;
-","          return 44;
+","          return COMMA;
 "-"          return SUB;
-"."          return 46;
-".."         return 47;
+"."          return DOT;
+".."         return TDOT;
 "/"          return DIV;
-"/*"         return 49;
-":"          return 50;
-":="         return 51;
-";"          return 52;
-"<"          return 53;
-"<="         return 54;
-"<>"         return 55;
-"="          return 56;
-">"          return 57;
-">="         return 58;
-"["          return 59;
-"]"          return 60;
+"/*"         return LCOMMENT;
+":"          return COLON;
+":="         return ASSIGNMENT;
+";"          return SEMI;
+"<"          return LT;
+"<="         return LE;
+"<>"         return NE;
+"="          return EQ;
+">"          return RT;
+">="         return RE;
+"["          return LC;
+"]"          return RC;
+
 
 {identifier} {  // 标识符
     //++wordcount;
-    return 36;
+    return id;
 }
 {integer}    {
     yylval.num = atoi(yytext); 
@@ -92,77 +93,77 @@ write        return 35;
 }
 {char_const} { //字符常数
     //++wordcount;
-    return 38;
+    return TRUECHAR;
 }
 {false_char_const} { //错误字符常数
     printf("Wrong Character Constant Format: %s\n", yytext); 
-    return 300;
+    return FALSECHAR;
 }
 {comment} {  // 注释
     //printf("This is a comment, do not show this: %s\n", yytext); 
-    return 301;
+    return TRUECOMMENT;
 }
 {false_comment} {  // 错误注释
     printf("Wrong Comment Format: %s\n", yytext); 
-    return 302;
+    return FALSECOMMENT;
 }
 
 . {  //其他非法字符
     printf("Illegal character: %s\n",yytext);
-    return 303;
+    return ILLEGALCHR;
 }
 
 %%
 
 
-// 定义键值对的结构体
-struct KeyValue {
-    char key[32];
-    int value;
-};
+// // 定义键值对的结构体
+// struct KeyValue {
+//     char key[32];
+//     int value;
+// };
 
-// 定义map结构体
-struct Map {
-    struct KeyValue data[MAX_SIZE];
-    int size;
-};
+// // 定义map结构体
+// struct Map {
+//     struct KeyValue data[MAX_SIZE];
+//     int size;
+// };
 
-// 初始化map
-void initMap(struct Map *map) {
-    map->size = 0;
-}
+// // 初始化map
+// void initMap(struct Map *map) {
+//     map->size = 0;
+// }
 
-// 插入键值对
-int insert(struct Map *map, const char *key) {
-    if (map->size < MAX_SIZE) {
-        strcpy(map->data[map->size].key, key);
-        map->data[map->size].value = map->size + 1; // 设置值为键值对在map中的位置+1
-        map->size++;
-        return map->size - 1; // 返回刚插入的键值对的位置
-    } else {
-        printf("Map is full, cannot insert more elements.\n");
-        return -1;
-    }
-}
+// // 插入键值对
+// int insert(struct Map *map, const char *key) {
+//     if (map->size < MAX_SIZE) {
+//         strcpy(map->data[map->size].key, key);
+//         map->data[map->size].value = map->size + 1; // 设置值为键值对在map中的位置+1
+//         map->size++;
+//         return map->size - 1; // 返回刚插入的键值对的位置
+//     } else {
+//         printf("Map is full, cannot insert more elements.\n");
+//         return -1;
+//     }
+// }
 
-// 查找键对应的值
-int get(struct Map *map, const char *key) {
-    for (int i = 0; i < map->size; i++) {
-        if (strcmp(map->data[i].key, key) == 0) {
-            return i; // 返回键值对在map中的位置
-        }
-    }
-    return -1;  // 返回-1表示未找到
-}
+// // 查找键对应的值
+// int get(struct Map *map, const char *key) {
+//     for (int i = 0; i < map->size; i++) {
+//         if (strcmp(map->data[i].key, key) == 0) {
+//             return i; // 返回键值对在map中的位置
+//         }
+//     }
+//     return -1;  // 返回-1表示未找到
+// }
 
-// 增加与给定字符串关联的键值对的值
-void incrementValue(struct Map *map, const char *key) {
-    for (int i = 0; i < map->size; i++) {
-        if (strcmp(map->data[i].key, key) == 0) {
-            map->data[i].value++;
-        }
-    }
-}
+// // 增加与给定字符串关联的键值对的值
+// void incrementValue(struct Map *map, const char *key) {
+//     for (int i = 0; i < map->size; i++) {
+//         if (strcmp(map->data[i].key, key) == 0) {
+//             map->data[i].value++;
+//         }
+//     }
+// }
 
 
 //     if (map->size < MAX_SIZE) {
