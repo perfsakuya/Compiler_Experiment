@@ -3,7 +3,6 @@
 #include <stdlib.h>
 #include <string.h>
 #include "y.tab.h" // 由 yacc -d 生成
-
 #define MAX_SIZE 100
 int wordcount = 0;
 %}
