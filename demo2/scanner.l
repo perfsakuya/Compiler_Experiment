@@ -12,7 +12,7 @@ digit       [0-9]
  // <标识符> → <字母>│<标识符> <数字>│<标识符> <字母>
 identifier {letter}({letter}|{digit})*
  //整数
-integer {digit}*
+integer {digit}+
  //字符常数和错误的字符常数
  //char_num '{letter}*'
 char_const ['][^']*[']
@@ -23,7 +23,7 @@ false_comment [/][*].*
 %%
 
 [ \t\r\a]+     ; // 空白字符
-[\n]           ; // 换行符
+[\n]         return LF; // 换行符
 and          return 1;
 array        return 2;
 begin        return 3;
@@ -61,14 +61,14 @@ while        return 34;
 write        return 35;
 "("          return 39;
 ")"          return 40;
-"*"          return 41;
+"*"          return MUL;
 "*/"         return 42;
-"+"          return 43;
+"+"          return ADD;
 ","          return 44;
-"-"          return 45;
+"-"          return SUB;
 "."          return 46;
 ".."         return 47;
-"/"          return 48;
+"/"          return DIV;
 "/*"         return 49;
 ":"          return 50;
 ":="         return 51;
@@ -86,9 +86,9 @@ write        return 35;
     //++wordcount;
     return 36;
 }
-{integer} {  // 整数
-    //++wordcount;
-    return 37;
+{integer}    {
+    yylval.num = atoi(yytext); 
+    return INTEGER;
 }
 {char_const} { //字符常数
     //++wordcount;
@@ -106,12 +106,14 @@ write        return 35;
     printf("Wrong Comment Format: %s\n", yytext); 
     return 302;
 }
+
 . {  //其他非法字符
     printf("Illegal character: %s\n",yytext);
     return 303;
 }
 
 %%
+
 
 // 定义键值对的结构体
 struct KeyValue {
@@ -186,62 +188,62 @@ void incrementValue(struct Map *map, const char *key) {
 //     }
 // }
 
+//废除的主函数
+// int main(int argc, char const *argv[]) {
+//     int type;
+//     char filename[64];
+//     struct Map map;
+//     int flag = 0;
+//     initMap(&map);
+//     printf("Modified by Tang Junzhe, Class 2, 202230444429\n");
 
-int main(int argc, char const *argv[]) {
-    int type;
-    char filename[64];
-    struct Map map;
-    int flag = 0;
-    initMap(&map);
-    printf("Modified by Tang Junzhe, Class 2, 202230444429\n");
+//     printf("Enter the name of the program file: ");  //读取文件
+//     scanf("%s", filename);
+//     FILE *file = fopen(filename, "r");
+//     if (file == NULL) {
+//         printf("Error: Cannot open the file %s.\n", filename);
+//         return 1;
+//     }
 
-    printf("Enter the name of the program file: ");  //读取文件
-    scanf("%s", filename);
-    FILE *file = fopen(filename, "r");
-    if (file == NULL) {
-        printf("Error: Cannot open the file %s.\n", filename);
-        return 1;
-    }
+//     yyin = file;
+//     while (type = yylex()) {
+//         if(type <= 9)  //为了美观设置的格式化输出
+//         {    
+//             printf("( %d, - )  ", type);
+//             flag++;
+//             if(flag%5 == 0)
+//             printf("\n");
+//         }
+//         else if(type == 36 | type == 37 | type == 38)  //标识符/整数/字符常数
+//         {    
+//             //printf("starting...\n");
+//             if(get(&map, yytext) == -1 ) {  //判断是新的标识符，加入哈希表
+//                 wordcount++;
+//                 insert(&map, yytext);
+//             }
+//             else {  //判断为旧的标识符，将对应的value++
+//                 incrementValue(&map, yytext);
+//             }
+//             printf("(%d, %d )  ", type, get(&map, yytext)+1);
+//             flag++;
+//             if(flag%5 == 0)
+//                 printf("\n");
+//         }
+//         else if(type == 300 | type == 301 | type == 302 | type == 303)  //抛出错误
+//             ; // do nothing
+//         else 
+//         {
+//             printf("(%d, - )  ", type);
+//             flag++;
+//             if(flag%5 == 0)
+//             printf("\n");
+//         }
+//     }
 
-    yyin = file;
-    while (type = yylex()) {
-        if(type <= 9)  //为了美观设置的格式化输出
-        {    
-            printf("( %d, - )  ", type);
-            flag++;
-            if(flag%5 == 0)
-            printf("\n");
-        }
-        else if(type == 36 | type == 37 | type == 38)  //标识符/整数/字符常数
-        {    
-            //printf("starting...\n");
-            if(get(&map, yytext) == -1 ) {  //判断是新的标识符，加入哈希表
-                wordcount++;
-                insert(&map, yytext);
-            }
-            else {  //判断为旧的标识符，将对应的value++
-                incrementValue(&map, yytext);
-            }
-            printf("(%d, %d )  ", type, get(&map, yytext)+1);
-            flag++;
-            if(flag%5 == 0)
-                printf("\n");
-        }
-        else if(type == 300 | type == 301 | type == 302 | type == 303)  //抛出错误
-            ; // do nothing
-        else 
-        {
-            printf("(%d, - )  ", type);
-            flag++;
-            if(flag%5 == 0)
-            printf("\n");
-        }
-    }
+//     fclose(file);  //关闭文件
+//     return 0;
+// }
 
-    fclose(file);  //关闭文件
-    return 0;
-}
-
-int yywrap() {
-    return 1;
-}
+// int yywrap() {
+//     return 1;
+// }
