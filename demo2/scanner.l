@@ -195,7 +195,6 @@ void incrementValue(struct Map *map, const char *key) {
 //     struct Map map;
 //     int flag = 0;
 //     initMap(&map);
-//     printf("Modified by Tang Junzhe, Class 2, 202230444429\n");
 
 //     printf("Enter the name of the program file: ");  //读取文件
 //     scanf("%s", filename);
