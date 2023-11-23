@@ -85,7 +85,7 @@ write        return WRITE;
 
 {identifier} {  // 标识符
     //可能需要一些类似    yylval.num = atoi(yytext); 的代码
-    yylval.num = atoi(yytext)
+    yylval.num = atoi(yytext);
     return id;
 }
 {integer}    {

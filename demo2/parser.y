@@ -23,37 +23,34 @@
 
 /* 指明不同 token 或者 规则 的数据类型 */
 %type <num> INTEGER exp
-
+%type <str> PROGRAM program
 /* 根据规定，YACC仅对第一条规则感兴趣, 或者使用 %start 符号指定的起始规则 */
 %start program
 
 
 %%
 //还没弄懂如何跳转语句 跳转时我先用“step”替换了
-program: PROGRAM {identifier} {
-    printf("(program,%d,-,-)",$1); //程序启动
-};
+
+// ------BUG------
+program: PROGRAM id {
+    printf("(program,%s,-,-)",$1); //程序启动
+}
 
 line: exp LF {
         printf("ans: %d\n", $1);
-    };
-
-    //声明 是总的语句的判别，每一句都是statment
-statement: 
-    SEMI    {}
-    |exp ASSIGNMENT exp SEMI
-    {   //赋值语句
-        $$ = $1;
-        printf("(:=,%d, - , %d)",$1,%%);
     }
-    |VAR  
 
-//expression：表达式
-// 表达式可以为单个整数, 或 表达式+运算符+表达式
+// 声明 是总的语句的判别，每一句都是statment
+// statement: SEMI    {}
+//         |exp ASSIGNMENT exp SEMI    { printf("(:=,%d, - , %d)",$3,$1);} //赋值语句 
+
+// expression: 表达式，表达式可以为单个整数, 或 表达式+运算符+表达式
         /* $$ 表示该条规则所返回的语义值 */
         /* $1 $2 $3 ... 依次表示匹配到的 token 所具有的值 */
-exp: INTEGER        { $$ = $1;}
-    /*需要确定是T1T2什么的(未完成）*/
+
+
+// ------BUG------
+exp: INTEGER {printf("integer");} //integer
     | exp ADD exp   {printf("(+ , %d , %d , T1)", $1, $3);} //加法
     | exp SUB exp   {printf("(- , %d , %d , T1)", $1, $3);} //减法
     | exp MUL exp   {printf("(* , %d , %d , T1)", $1, $3);} //乘法 
@@ -61,28 +58,32 @@ exp: INTEGER        { $$ = $1;}
     | exp RT  exp   {printf("(j> , %d , %d , step)",$1,$3);} //大于号
     | exp LT  exp   {printf("(j< , %d , %d , step)",$1,$3);} //小于号
     | exp RE  exp   {printf("(j>= , %d , %d , step)",$1,$3);} //大于等于号 
-    | exp LE  exp   {printf("(j<= , %d , %d , step)",$1,$3);} //小于等于号    
+    | exp LE  exp   {printf("(j<= , %d , %d , step)",$1,$3);} //小于等于号   
+
 // backup        
-//        /* $1 $2 $3 ... 依次表示匹配到的第一，第二，第三个 token 的值 */
-//        puts("---> found rule 1: exp -> INTEGER");
-//        $$ = $1;
-//        printf("---> %d\n", $1);
-//    }| exp ADD exp {
-//        puts("---> found rule 2: exp -> exp ADD exp");
-//        $$ = $1 + $3;
-//        printf("---> %d + %d = %d\n", $1, $3, $$);
-//    }| exp SUB exp {
-//        puts("---> found rule 3: exp -> exp SUB exp");
-//        $$ = $1 - $3;
-//        printf("---> %d - %d = %d\n", $1, $3, $$);
-//    }| exp MUL exp {
-//        puts("---> found rule 4: exp -> exp MUL exp");
-//        $$ = $1 * $3;
-//        printf("---> %d * %d = %d\n", $1, $3, $$);
-//    }| exp DIV exp {
-//        puts("---> found rule 5: exp -> exp DIV exp");
-//        $$ = $1 / $3; // don't care div 0
-//        printf("---> %d / %d = %d\n", $1, $3, $$);
+// exp: INTEGER { // 表达式可以为单个整数, 或 表达式+运算符+表达式
+//         /* $$ 表示该条规则所返回的语义值 */
+//         /* $1 $2 $3 ... 依次表示匹配到的 token 所具有的值 */
+//         puts("---> found rule 1: exp -> INTEGER");
+//         $$ = $1;
+//         printf("---> %d\n", $1);
+//     }| exp ADD exp {
+//         puts("---> found rule 2: exp -> exp ADD exp");
+//         $$ = $1 + $3;
+//         printf("---> %d + %d = %d\n", $1, $3, $$);
+//     }| exp SUB exp {
+//         puts("---> found rule 3: exp -> exp SUB exp");
+//         $$ = $1 - $3;
+//         printf("---> %d - %d = %d\n", $1, $3, $$);
+//     }| exp MUL exp {
+//         puts("---> found rule 4: exp -> exp MUL exp");
+//         $$ = $1 * $3;
+//         printf("---> %d * %d = %d\n", $1, $3, $$);
+//     }| exp DIV exp {
+//         puts("---> found rule 5: exp -> exp DIV exp");
+//         $$ = $1 / $3; // don't care div 0
+//         printf("---> %d / %d = %d\n", $1, $3, $$);
+//     };
 
     
 %%
