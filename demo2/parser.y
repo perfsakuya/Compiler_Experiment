@@ -42,20 +42,17 @@ statement:
         $$ = $1;
         printf("(:=,%d, - , %d)",$1,%%);
     }
-//expression：表达式
-exp: INTEGER { // 表达式可以为单个整数, 或 表达式+运算符+表达式
-        /* $$ 表示该条规则所返回的语义值 */
 
+//expression：表达式
+// 表达式可以为单个整数, 或 表达式+运算符+表达式
+        /* $$ 表示该条规则所返回的语义值 */
         /* $1 $2 $3 ... 依次表示匹配到的 token 所具有的值 */
-    }| exp ADD exp {        //加法
-        printf("(+ , %d , %d , T1)", $1, $3); /*需要确定是T1T2什么的(未完成）*/
-    }| exp SUB exp {         //减法
-        printf("(- , %d , %d , T1)", $1, $3);
-    }| exp MUL exp {         //乘法        
-        printf("(* , %d , %d , T1)", $1, $3);
-    }| exp DIV exp {         //除法
-         // don't care div 0
-        printf("(/ , %d , %d , T1)", $1, $3);
+exp: INTEGER        { $$ = $1;}
+    /*需要确定是T1T2什么的(未完成）*/
+    | exp ADD exp   {printf("(+ , %d , %d , T1)", $1, $3);} //加法
+    | exp SUB exp   {printf("(- , %d , %d , T1)", $1, $3);}//减法
+    | exp MUL exp   {printf("(* , %d , %d , T1)", $1, $3);}//乘法 
+    | exp DIV exp   {printf("(/ , %d , %d , T1)", $1, $3);} //除法
         
         
 // backup        
@@ -80,7 +77,7 @@ exp: INTEGER { // 表达式可以为单个整数, 或 表达式+运算符+表达
 //        $$ = $1 / $3; // don't care div 0
 //        printf("---> %d / %d = %d\n", $1, $3, $$);
 
-    };
+    
 %%
 
 int main() {
