@@ -10,6 +10,7 @@
 
 /* %left 表示左结合, %right 表示右结合 */
 /* 最后列出的定义具有最高的优先级 */
+%left ASSIGNMENT 
 %left ADD SUB
 %left MUL DIV 
 /* 定义结构体, 使得 token 可以附带相应的数据信息(语义值) */
@@ -19,36 +20,35 @@
 }
 /* 指明不同 token 或者 规则 的数据类型 */
 %type <num> INTEGER exp
-/* 根据规定，YACC仅对第一条规则感兴趣, 或者使用 %start 符号指定的起始规则 */
+/* 根据规定,YACC仅对第一条规则感兴趣, 或者使用 %start 符号指定的起始规则 */
 %start program
 %%
 
-program: line | line program;
+program: PROGRAM {identifier} {
+    printf("(program,%d,-,-)",$1); //程序启动
+};
+
 line: exp LF {
         printf("ans: %d\n", $1);
     };
+statement: 
+    exp ASSIGNMENT exp{   //赋值语句
+        $$ = $1;
+        printf("(:=,%d, - , %d)",$1,%%);
+    }
+//expression：表达式
 exp: INTEGER { // 表达式可以为单个整数, 或 表达式+运算符+表达式
         /* $$ 表示该条规则所返回的语义值 */
         /* $1 $2 $3 ... 依次表示匹配到的 token 所具有的值 */
-        puts("---> found rule 1: exp -> INTEGER");
-        $$ = $1;
-        printf("---> %d\n", $1);
-    }| exp ADD exp {
-        puts("---> found rule 2: exp -> exp ADD exp");
-        $$ = $1 + $3;
-        printf("---> %d + %d = %d\n", $1, $3, $$);
-    }| exp SUB exp {
-        puts("---> found rule 3: exp -> exp SUB exp");
-        $$ = $1 - $3;
-        printf("---> %d - %d = %d\n", $1, $3, $$);
-    }| exp MUL exp {
-        puts("---> found rule 4: exp -> exp MUL exp");
-        $$ = $1 * $3;
-        printf("---> %d * %d = %d\n", $1, $3, $$);
-    }| exp DIV exp {
-        puts("---> found rule 5: exp -> exp DIV exp");
-        $$ = $1 / $3; // don't care div 0
-        printf("---> %d / %d = %d\n", $1, $3, $$);
+    }| exp ADD exp {        //加法
+        printf("(+ , %d , %d , T1)", $1, $3); /*需要确定是T1T2什么的(未完成）*/
+    }| exp SUB exp {         //减法
+        printf("(- , %d , %d , T1)", $1, $3);
+    }| exp MUL exp {         //乘法        
+        printf("(* , %d , %d , T1)", $1, $3);
+    }| exp DIV exp {         //除法
+         // don't care div 0
+        printf("(/ , %d , %d , T1)", $1, $3);
     };
 %%
 
