@@ -4,6 +4,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include "tiny.h"
+#include "tiny.h"
 int quad_ruple_count = 0; // 地址计数
 int tmp_count = 0;
 
@@ -36,7 +37,7 @@ int tmp_count = 0;
 %%
 
 // 递归方法在这里实现，便于查看
-// 规则：program识别一次，var统一在begin前识别，begin之后识别main，main之后识别end.
+// 规则：program识别一次，var统一在begin前识别，begin之后识别main(statement)，main(statement)之后识别end.
 // 1.识别别开头声明 PROGRAM id;
 program: start | start program ; 
 // 2.识别变量声明 var a,b,c:integer;
@@ -44,9 +45,9 @@ start: start declaration ;
  // 3.识别begin标识符
 declaration: declaration begin ;
 // 4.识别主函数
-begin: begin main ; 
+begin: begin statement ; 
 // 5. 识别end.
-main: main end ; 
+statement: statement end ; 
 
 
 // 具体实现
@@ -78,7 +79,7 @@ begin: BEG LF {
 
 // 4.主程序(语句块)
 // <语句> → <赋值句>│<if句>│<while句>│<repeat句>│<复合句>
-main: assignment_list {
+statement: assignment_list {
     printf("[info] Processing assignment.\n"); // 只作提示，以后要删除
 } | if_statement {
 
@@ -179,39 +180,47 @@ bool_comparison: exp LT exp {
     printf("(%d) (j<=, %s, %s, %s)\n",quad_ruple_count,$1,$3,quad_ruple_count+2);
     quad_ruple_count++;
 } | exp RT exp {
+} | exp RT exp {
     printf("(%d) (j>, %s, %s, %s)\n",quad_ruple_count,$1,$3,quad_ruple_count+2);
     quad_ruple_count++;
+} | exp RE exp {
 } | exp RE exp {
     printf("(%d) (j>=, %s, %s, %s)\n",quad_ruple_count,$1,$3,quad_ruple_count+2);
     quad_ruple_count++;
 } | exp EQ exp {
     printf("(%d) (j=, %s, %s, %s)\n",quad_ruple_count,$1,$3,quad_ruple_count+2);
     quad_ruple_count++;
-};
+}
 
-// -----------------------Unfinished!!!---------------------------
+// ------------------------Unfinished!!!---------------------------
 // 我们要用tiny.h中的backpatch和merge进行操作，从而达到状态转移的效果
 // 4.3 <while句> → while <布尔表达式> do <语句>
-while_statement: WHILE bool_comparison DO {
+while_statement: WHILE bool_comparison DO statement {
+    backpatch
+>>>>>>> 4dc1b967ef5b26db89d1c5343c8ddcbfa2fb0d47
     printf("(%d) (j,-,-,%s )\n",quad_ruple_count,);
     quad_ruple_count++;
-};
+}   |IF comparison THEN statement ELSE statement {      //4.4 If 语句
+    printf("(%d) (j,-,-,%s )\n",quad_ruple_count,);
+    quad_ruple_count++;
+}   | meta_assignment
+
 
 // 4.4 <if句>→ if <布尔表达式> then <语句>│if <布尔表达式> then <语句> else <语句>
-if_statement: IF bool_comparison THEN exp {
+if_statement: IF bool_comparison THEN statement {
     printf("(%d) (j,-,-,%s )\n",quad_ruple_count,);
     quad_ruple_count++;
-
-} | IF bool_comparison THEN exp ELSE exp {
+} | IF bool_comparison THEN statement ELSE statement {
 
 };
 
 // 4.5 <repeat句> → repeat <语句> until <布尔表达式>
-repeat_statement: REPEAT exp UNTIL bool_comparison {
+repeat_statement: REPEAT statement UNTIL bool_comparison {
 
 };
 
 // --------------------end Unfinished!!-----------------------------
+
 
 
 // 5.end结束符号
