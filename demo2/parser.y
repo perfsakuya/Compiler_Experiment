@@ -3,6 +3,7 @@
 #include <stdio.h>
 #include <string.h>
 int quad_ruple_count = 0; // 地址计数
+int flag = 0;
 %}
 
 /* 声明 token 供后续使用, 同时也可以在 lex 中使用 */
@@ -24,7 +25,7 @@ int quad_ruple_count = 0; // 地址计数
 
 /* 指明不同 token 或者 规则 的数据类型 */
 %type <str> program_name id
-%type <num> INTEGER assignment_list meta_assignment
+%type <num> INTEGER assignment_list meta_assignment exp
 %type <str> variable_list
 
 /* 根据规定，YACC仅对第一条规则感兴趣, 或者使用 %start 符号指定的起始规则 */
@@ -58,6 +59,8 @@ program_name: id {
 // 2.变量常量声明
 declaration: VAR variable_list COLON INT SEMI LF {
     printf("[info] Variable Declaration: %s of type integer.\n", $2); // 只作提示，以后要删除
+} | LF {
+    // do nothing
 }
 variable_list: id {
     $$ = $1;
@@ -82,12 +85,34 @@ assignment_list: meta_assignment LF {
 } | meta_assignment assignment_list{
     $$ = $1;
 };
-meta_assignment: id ASSIGNMENT INTEGER SEMI {
+meta_assignment: id ASSIGNMENT exp SEMI {
     // 输出赋值四元式
-    printf("(%d) (:=, %d , - , %s)\n", quad_ruple_count, $3, $1);
+    if(flag == 0) {
+        printf("(%d) (:=, %d , - , %s)\n", quad_ruple_count, $3, $1);
+    } else if(flag == 1) {
+        printf("(%d) (:=, %s , - , %s)\n", quad_ruple_count, $3, $1);
+    }
     quad_ruple_count++;
     // 这里储存变量的值（后续如果有需要的话）（作业中不用实现）
 };
+
+// <<<这里有bug>>>
+exp: INTEGER {
+    $$ = $1;
+} | id {
+    $$ = $1; // 这里直接找变量标识符，也可以用函数找到变量的值（后续如果有需要的话）（作业中不用实现）
+    flag = 1; // 出现标识符，则用另外一个输出
+} | exp ADD exp {
+    $$ = $1 + $3;
+} | exp SUB exp {
+    $$ = $1 - $3;
+} | exp MUL exp {
+    $$ = $1 * $3;
+} | exp DIV exp {
+    $$ = $1 / $3; // 假设不会除以零
+};
+
+
 
 // 5.end结束符号
 end: END DOT LF {
