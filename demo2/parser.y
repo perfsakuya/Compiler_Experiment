@@ -76,12 +76,19 @@ begin: BEG LF {
 }
 
 
-// 4.主程序
+// 4.主程序(语句块)
+// <语句> → <赋值句>│<if句>│<while句>│<repeat句>│<复合句>
 main: assignment_list {
     printf("[info] Processing assignment.\n"); // 只作提示，以后要删除
+} | if_statement {
+
+} | while_statement {
+
+} | repeat_statement {
+
 };
 
-// 4.1 赋值符号:=
+// 4.1 <赋值句> → <标识符> := <算术表达式>
 assignment_list: meta_assignment LF {
     $$ = $1;
 } | meta_assignment assignment_list{
@@ -93,7 +100,7 @@ meta_assignment: id ASSIGNMENT exp SEMI {
     quad_ruple_count++;
     // 这里储存变量的值（后续如果有需要的话）（作业中不用实现）
 };
-// 赋值表达式部分
+// 算数表达式（部分）
 exp: INTEGER {
     char temp[20];
     snprintf(temp, sizeof(temp), "%d", $1); // 转换成str再传参
@@ -130,8 +137,42 @@ exp: INTEGER {
     $$ = T;// 修改后的传值
 };
 
-// 4.2 while中的语句
-comparison: exp LT exp {
+// 4.2 布尔表达式
+// <布尔表达式> → <布尔表达式> or <布尔项>│<布尔项>
+
+bool_expression: bool_expression OR bool_1 {
+
+} | bool_1 {
+
+
+};
+// <布尔项> → <布尔项> and <布因子>│<布因子>
+bool_1: bool_1 AND bool_2 {
+
+} | bool_2 {
+
+};
+// <布因子> → <布尔量>│not <布因子>
+bool_2: bool_3 {
+
+} | NOT bool_2 {
+
+};
+// <布尔量> → <布尔常量>│<标识符>│（ <布尔表达式> ）│ 
+bool_3: bool_value {
+
+} | id {
+
+} | LB bool_expression RB {
+
+} | bool_comparison { // <标识符> <关系符> <标识符>│<算术表达式> <关系符> <算术表达式>
+
+};
+
+
+// <标识符> <关系符> <标识符>
+// 需要检查
+bool_comparison: exp LT exp {
     printf("(%d) (j<, %s, %s, %s)\n",quad_ruple_count,$1,$3,quad_ruple_count+2);
     quad_ruple_count++;
 } | exp LE exp {
@@ -146,21 +187,30 @@ comparison: exp LT exp {
 } | exp EQ exp {
     printf("(%d) (j=, %s, %s, %s)\n",quad_ruple_count,$1,$3,quad_ruple_count+2);
     quad_ruple_count++;
-}
+};
 
 // -----------------------Unfinished!!!---------------------------
 // 我们要用tiny.h中的backpatch和merge进行操作，从而达到状态转移的效果
-// 4.2 While 循环语句
-While: WHILE comparison DO {
+// 4.3 <while句> → while <布尔表达式> do <语句>
+while_statement: WHILE bool_comparison DO {
     printf("(%d) (j,-,-,%s )\n",quad_ruple_count,);
     quad_ruple_count++;
 };
 
-// 4.3 If 语句
-If:IF comparison DO {
+// 4.4 <if句>→ if <布尔表达式> then <语句>│if <布尔表达式> then <语句> else <语句>
+if_statement: IF bool_comparison THEN exp {
     printf("(%d) (j,-,-,%s )\n",quad_ruple_count,);
     quad_ruple_count++;
-}
+
+} | IF bool_comparison THEN exp ELSE exp {
+
+};
+
+// 4.5 <repeat句> → repeat <语句> until <布尔表达式>
+repeat_statement: REPEAT exp UNTIL bool_comparison {
+
+};
+
 // --------------------end Unfinished!!-----------------------------
 
 
@@ -177,7 +227,6 @@ end: END DOT LF {
 
 
 // 没用的旧东西
-
 // 声明 是总的语句的判别，每一句都是statment
 // statement: SEMI    {}
 //         |exp ASSIGNMENT exp SEMI    { printf("(:=,%d, - , %d)",$3,$1);} //赋值语句 
@@ -185,8 +234,6 @@ end: END DOT LF {
 // expression: 表达式，表达式可以为单个整数, 或 表达式+运算符+表达式
         /* $$ 表示该条规则所返回的语义值 */
         /* $1 $2 $3 ... 依次表示匹配到的 token 所具有的值 */
-
-
 // ------BUG------
 // exp: INTEGER {printf("integer");} //integer
 //     | exp ADD exp   {printf("(+ , %d , %d , T1)", $1, $3);} //加法
@@ -197,7 +244,6 @@ end: END DOT LF {
 //     | exp LT  exp   {printf("(j< , %d , %d , step)",$1,$3);} //小于号
 //     | exp RE  exp   {printf("(j>= , %d , %d , step)",$1,$3);} //大于等于号 
 //     | exp LE  exp   {printf("(j<= , %d , %d , step)",$1,$3);} //小于等于号   
-
 // backup        
 // exp: INTEGER { // 表达式可以为单个整数, 或 表达式+运算符+表达式
 //         /* $$ 表示该条规则所返回的语义值 */
@@ -222,7 +268,6 @@ end: END DOT LF {
 //         $$ = $1 / $3; // don't care div 0
 //         printf("---> %d / %d = %d\n", $1, $3, $$);
 //     };
-
 %%
 
 
