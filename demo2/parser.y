@@ -11,7 +11,6 @@
 
 /* %left 表示左结合, %right 表示右结合 */
 /* 最后列出的定义具有最高的优先级 */
-%left ASSIGNMENT 
 %left ADD SUB
 %left MUL DIV 
 
@@ -23,22 +22,22 @@
 
 /* 指明不同 token 或者 规则 的数据类型 */
 %type <num> INTEGER exp
-%type <str> PROGRAM program
+%type <str> PROGRAM program id
+%type <str> program_name
 /* 根据规定，YACC仅对第一条规则感兴趣, 或者使用 %start 符号指定的起始规则 */
-%start program
+%start declaration
 
 
 %%
-//还没弄懂如何跳转语句 跳转时我先用“step”替换了
 
-// ------BUG------
-program: PROGRAM id {
-    printf("(program,%s,-,-)",$1); //程序启动
-}
-
-line: exp LF {
-        printf("ans: %d\n", $1);
-    }
+// 第一部分：识别开头声明 PROGRAM id;
+declaration: PROGRAM program_name SEMI LF {
+                printf("(program,%s,-,-)\n", $2);
+        };
+program_name: id {
+        // printf("(program,%s,-,-)",$1); //程序启动
+                $$ = $1; // 假设标识符的值存储在联合体的 str 成员中
+        };
 
 // 声明 是总的语句的判别，每一句都是statment
 // statement: SEMI    {}
@@ -86,6 +85,14 @@ exp: INTEGER {printf("integer");} //integer
 //     };
 
     
+
+
+
+
+
+
+
+
 %%
 
 int main() {

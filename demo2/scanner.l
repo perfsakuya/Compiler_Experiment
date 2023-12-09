@@ -10,7 +10,7 @@ int wordcount = 0;
 letter      [A-Za-z]
 digit       [0-9]
  // <标识符> → <字母>│<标识符> <数字>│<标识符> <字母>
-identifier {letter}({letter}|{digit})*
+identifier ({letter}|_){letter}({letter}|{digit}|_)*
  //整数
 integer {digit}+
  //字符常数和错误的字符常数
@@ -84,8 +84,8 @@ write        return WRITE;
 
 
 {identifier} {  // 标识符
-    //可能需要一些类似    yylval.num = atoi(yytext); 的代码
-    yylval.num = atoi(yytext);
+
+    yylval.str = strdup(yytext);
     return id;
 }
 {integer}    {
