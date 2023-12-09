@@ -2,6 +2,7 @@
 /* 包含所需头文件 */
 #include <stdio.h>
 #include <string.h>
+int quad_ruple_count = 0; // 地址计数
 %}
 
 /* 声明 token 供后续使用, 同时也可以在 lex 中使用 */
@@ -23,7 +24,7 @@
 
 /* 指明不同 token 或者 规则 的数据类型 */
 %type <str> program_name id
-%type <num> INTEGER exp
+%type <num> INTEGER assignment_list meta_assignment
 %type <str> variable_list
 
 /* 根据规定，YACC仅对第一条规则感兴趣, 或者使用 %start 符号指定的起始规则 */
@@ -46,17 +47,17 @@ main: main end ;
 
 
 // 具体实现
-// 第一部分：识别开头声明 PROGRAM id;
+// 1.识别开头声明 PROGRAM id;
 start: PROGRAM program_name SEMI LF {
-    printf("(program,%s,-,-)\n", $2);
+    printf("(%d) (program,%s,-,-)\n", quad_ruple_count, $2);
+    quad_ruple_count++;
 }
 program_name: id {
     $$ = $1;
 }
-
-// 第二部分：变量常量声明
+// 2.变量常量声明
 declaration: VAR variable_list COLON INT SEMI LF {
-    printf("Variable Declaration: %s of type integer.\n", $2); // 只作提示，以后要删除
+    printf("[info] Variable Declaration: %s of type integer.\n", $2); // 只作提示，以后要删除
 }
 variable_list: id {
     $$ = $1;
@@ -64,24 +65,34 @@ variable_list: id {
     $$ = strcat($1, ",");
     $$ = strcat($1, $3);
 }
-
-// 第三部分：begin开始符号
+// 3.begin开始符号
 begin: BEG LF {
-    printf("beginning main part.\n"); // 只作提示，以后要删除
+    printf("[info] Beginning main part.\n"); // 只作提示，以后要删除
 }
 
-// 第四部分：主程序
-main: OR LF{
 
-    printf("main part.\n"); // 只作提示，以后要删除
+// 4.主程序
+main: assignment_list {
+    printf("[info] Processing assignment.\n"); // 只作提示，以后要删除
+};
 
+// 4.1 赋值符号:=
+assignment_list: meta_assignment LF {
+    $$ = $1;
+} | meta_assignment assignment_list{
+    $$ = $1;
+};
+meta_assignment: id ASSIGNMENT INTEGER SEMI {
+    // 输出赋值四元式
+    printf("(%d) (:=, %d , - , %s)\n", quad_ruple_count, $3, $1);
+    quad_ruple_count++;
+    // 这里储存变量的值（后续如果有需要的话）（作业中不用实现）
+};
 
-}
-
-// 第五部分：end结束符号
+// 5.end结束符号
 end: END DOT LF {
-    printf("(sys , - , - , - )\n");
-    printf("ending main part.\n"); // 只作提示，以后要删除
+    printf("(%d) (sys , - , - , - )\n", quad_ruple_count);
+    printf("[info] Ending main part.\n"); // 只作提示，以后要删除
     YYACCEPT;
 };
 
@@ -90,7 +101,7 @@ end: END DOT LF {
 
 
 
-statement: 
+// statement: 
 
 // 声明 是总的语句的判别，每一句都是statment
 // statement: SEMI    {}
@@ -102,15 +113,15 @@ statement:
 
 
 // ------BUG------
-exp: INTEGER {printf("integer");} //integer
-    | exp ADD exp   {printf("(+ , %d , %d , T1)", $1, $3);} //加法
-    | exp SUB exp   {printf("(- , %d , %d , T1)", $1, $3);} //减法
-    | exp MUL exp   {printf("(* , %d , %d , T1)", $1, $3);} //乘法 
-    | exp DIV exp   {printf("(/ , %d , %d , T1)", $1, $3);} //除法
-    | exp RT  exp   {printf("(j> , %d , %d , step)",$1,$3);} //大于号
-    | exp LT  exp   {printf("(j< , %d , %d , step)",$1,$3);} //小于号
-    | exp RE  exp   {printf("(j>= , %d , %d , step)",$1,$3);} //大于等于号 
-    | exp LE  exp   {printf("(j<= , %d , %d , step)",$1,$3);} //小于等于号   
+// exp: INTEGER {printf("integer");} //integer
+//     | exp ADD exp   {printf("(+ , %d , %d , T1)", $1, $3);} //加法
+//     | exp SUB exp   {printf("(- , %d , %d , T1)", $1, $3);} //减法
+//     | exp MUL exp   {printf("(* , %d , %d , T1)", $1, $3);} //乘法 
+//     | exp DIV exp   {printf("(/ , %d , %d , T1)", $1, $3);} //除法
+//     | exp RT  exp   {printf("(j> , %d , %d , step)",$1,$3);} //大于号
+//     | exp LT  exp   {printf("(j< , %d , %d , step)",$1,$3);} //小于号
+//     | exp RE  exp   {printf("(j>= , %d , %d , step)",$1,$3);} //大于等于号 
+//     | exp LE  exp   {printf("(j<= , %d , %d , step)",$1,$3);} //小于等于号   
 
 // backup        
 // exp: INTEGER { // 表达式可以为单个整数, 或 表达式+运算符+表达式
@@ -137,15 +148,6 @@ exp: INTEGER {printf("integer");} //integer
 //         printf("---> %d / %d = %d\n", $1, $3, $$);
 //     };
 
-    
-
-
-
-
-
-
-
-
 %%
 
 int main() {
@@ -156,7 +158,7 @@ int main() {
 }
 // Linux 下注释掉这个函数
 void yyerror(char *msg) {
-    printf("Error encountered: %s \n", msg);
+    printf("[Error] encountered: %s \n", msg);
 }
 // Linux 下注释掉这个函数
 int yywrap(){
