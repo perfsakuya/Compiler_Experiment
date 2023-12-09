@@ -1,9 +1,22 @@
 %{
 /* 包含所需头文件 */
 #include <stdio.h>
+#include <stdlib.h>
 #include <string.h>
 int quad_ruple_count = 0; // 地址计数
-int flag = 0;
+int tmp_count = 0;
+
+char* convertToString(int value) {
+    char buffer[20];
+    snprintf(buffer, sizeof(buffer), "%d", value);
+
+    // 分配足够的内存来存储转换后的字符串
+    char* result = (char*)malloc(strlen(buffer) + 1);
+    strcpy(result, buffer);
+
+    return result;
+}
+
 %}
 
 /* 声明 token 供后续使用, 同时也可以在 lex 中使用 */
@@ -24,9 +37,8 @@ int flag = 0;
 }
 
 /* 指明不同 token 或者 规则 的数据类型 */
-%type <str> program_name id
-%type <num> INTEGER assignment_list meta_assignment exp
-%type <str> variable_list
+%type <num> INTEGER assignment_list meta_assignment 
+%type <str> program_name id variable_list exp
 
 /* 根据规定，YACC仅对第一条规则感兴趣, 或者使用 %start 符号指定的起始规则 */
 %start program
@@ -86,32 +98,47 @@ assignment_list: meta_assignment LF {
     $$ = $1;
 };
 meta_assignment: id ASSIGNMENT exp SEMI {
-    // 输出赋值四元式
-    if(flag == 0) {
-        printf("(%d) (:=, %d , - , %s)\n", quad_ruple_count, $3, $1);
-    } else if(flag == 1) {
-        printf("(%d) (:=, %s , - , %s)\n", quad_ruple_count, $3, $1);
-    }
+    // 输出赋值的四元式
+    printf("(%d) (:=, %s , - , %s)\n",quad_ruple_count, $3, $1);
     quad_ruple_count++;
     // 这里储存变量的值（后续如果有需要的话）（作业中不用实现）
 };
-
-// <<<这里有bug>>>
+// 赋值表达式部分
 exp: INTEGER {
-    $$ = $1;
+    char temp[20];
+    snprintf(temp, sizeof(temp), "%d", $1); // 转换成str再传参
+    $$ = temp; 
 } | id {
-    $$ = $1; // 这里直接找变量标识符，也可以用函数找到变量的值（后续如果有需要的话）（作业中不用实现）
-    flag = 1; // 出现标识符，则用另外一个输出
+    $$ = $1; // 本身就是str，直接传值
 } | exp ADD exp {
-    $$ = $1 + $3;
+    tmp_count++;
+    char* T;
+    asprintf(&T, "T%d", tmp_count);
+    printf("(%d) (+, %s, %s, %s)\n",quad_ruple_count,$1,$3,T);
+    quad_ruple_count++;
+    $$ = T;// 修改后的传值
 } | exp SUB exp {
-    $$ = $1 - $3;
+    tmp_count++;
+    char* T;
+    asprintf(&T, "T%d", tmp_count);
+    printf("(%d) (-, %s, %s, %s)\n",quad_ruple_count,$1,$3,T);
+    quad_ruple_count++;
+    $$ = T;// 修改后的传值
 } | exp MUL exp {
-    $$ = $1 * $3;
+    tmp_count++;
+    char* T;
+    asprintf(&T, "T%d", tmp_count);
+    printf("(%d) (*, %s, %s, %s)\n",quad_ruple_count,$1,$3,T);
+    quad_ruple_count++;
+    $$ = T;// 修改后的传值
 } | exp DIV exp {
-    $$ = $1 / $3; // 假设不会除以零
+    tmp_count++;
+    char* T;
+    asprintf(&T, "T%d", tmp_count);
+    printf("(%d) (/, %s, %s, %s)\n",quad_ruple_count,$1,$3,T);
+    quad_ruple_count++;
+    $$ = T;// 修改后的传值
 };
-
 
 
 // 5.end结束符号
@@ -175,6 +202,9 @@ end: END DOT LF {
 
 %%
 
+
+
+
 int main() {
     extern FILE *yyin;
     yyin = stdin;
@@ -189,3 +219,4 @@ void yyerror(char *msg) {
 int yywrap(){
     return 1;
 }
+
