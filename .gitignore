@@ -35,6 +35,5 @@
 .vscode/
 
 # lex and yacc
-*.c
 *.h
 *.exe
