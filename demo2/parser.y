@@ -4,6 +4,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include "tiny.h"
+#include "tiny.h"
 int quad_ruple_count = 0; // 地址计数
 int tmp_count = 0;
 
@@ -138,8 +139,10 @@ comparison: exp LT exp {
     printf("(%d) (j<=, %s, %s, %s)\n",quad_ruple_count,$1,$3,quad_ruple_count+2);
     quad_ruple_count++;
 } | exp RT exp {
+} | exp RT exp {
     printf("(%d) (j>, %s, %s, %s)\n",quad_ruple_count,$1,$3,quad_ruple_count+2);
     quad_ruple_count++;
+} | exp RE exp {
 } | exp RE exp {
     printf("(%d) (j>=, %s, %s, %s)\n",quad_ruple_count,$1,$3,quad_ruple_count+2);
     quad_ruple_count++;
@@ -148,20 +151,21 @@ comparison: exp LT exp {
     quad_ruple_count++;
 }
 
-// -----------------------Unfinished!!!---------------------------
-// 我们要用tiny.h中的backpatch和merge进行操作，从而达到状态转移的效果
-// 4.2 While 循环语句
-While: WHILE comparison DO {
+//------------------------Unfinished!!!---------------------------
+//我们要用tiny.h中的backpatch和merge进行操作，从而达到状态转移的效果
+//4.3 While 循环语句
+statement: WHILE comparison DO statement {
+    backpatch
     printf("(%d) (j,-,-,%s )\n",quad_ruple_count,);
     quad_ruple_count++;
-};
+}   |IF comparison THEN statement ELSE statement {      //4.4 If 语句
+    printf("(%d) (j,-,-,%s )\n",quad_ruple_count,);
+    quad_ruple_count++;
+}   | meta_assignment
 
-// 4.3 If 语句
-If:IF comparison DO {
-    printf("(%d) (j,-,-,%s )\n",quad_ruple_count,);
-    quad_ruple_count++;
-}
-// --------------------end Unfinished!!-----------------------------
+    
+
+//--------------------end Unfinished!!-----------------------------
 
 
 // 5.end结束符号
