@@ -75,7 +75,7 @@
 #include "tiny.h"
 int quad_ruple_count = 0; // 地址计数
 int tmp_count = 0;
-
+char* LTemp,RTemp;
 
 #line 81 "y.tab.c"
 
@@ -254,7 +254,7 @@ extern int yydebug;
 #if ! defined YYSTYPE && ! defined YYSTYPE_IS_DECLARED
 union YYSTYPE
 {
-#line 23 "parser.y"
+#line 27 "parser.y"
 
     int num;
     char *str;
@@ -510,16 +510,16 @@ union yyalloc
 /* YYFINAL -- State number of the termination state.  */
 #define YYFINAL  5
 /* YYLAST -- Last index in YYTABLE.  */
-#define YYLAST   78
+#define YYLAST   79
 
 /* YYNTOKENS -- Number of terminals.  */
 #define YYNTOKENS  68
 /* YYNNTS -- Number of nonterminals.  */
 #define YYNNTS  19
 /* YYNRULES -- Number of rules.  */
-#define YYNRULES  43
+#define YYNRULES  42
 /* YYNSTATES -- Number of states.  */
-#define YYNSTATES  81
+#define YYNSTATES  82
 
 #define YYUNDEFTOK  2
 #define YYMAXUTOK   322
@@ -572,11 +572,11 @@ static const yytype_uint8 yytranslate[] =
   /* YYRLINE[YYN] -- Source line where rule number YYN was defined.  */
 static const yytype_uint8 yyrline[] =
 {
-       0,    39,    39,    39,    42,    43,    48,    51,    53,    59,
-      61,    65,    67,    76,    78,    80,    82,    84,    93,    95,
-      98,   110,   113,   118,   125,   130,   134,   138,   145,   147,
-     149,   155,   159,   161,   168,   175,   182,   225,   228,   231,
-     232,   235,   236,   239
+       0,    44,    44,    47,    48,    53,    56,    58,    64,    66,
+      70,    72,    81,    83,    85,    87,    89,    94,    96,   100,
+     107,   107,   107,   111,   113,   115,   118,   123,   134,   137,
+     142,   149,   158,   162,   164,   171,   178,   185,   228,   232,
+     236,   240,   244
 };
 #endif
 
@@ -595,9 +595,10 @@ static const char *const yytname[] =
   "FALSECHAR", "TRUECOMMENT", "FALSECOMMENT", "ILLEGALCHR", "ADD", "SUB",
   "MUL", "DIV", "$accept", "program", "program_name", "temp_rule",
   "var_description", "var_definition", "variable_list", "statement",
+  "complex_statement", "begin", "end", "statement_list",
   "assignment_statement", "meta_assignment", "if_statement",
-  "while_statement", "repeat_statement", "complex_statement", "begin",
-  "end", "statement_list", "calc_expression", "bool_comparison", YY_NULLPTR
+  "while_statement", "repeat_statement", "calc_expression",
+  "bool_comparison", YY_NULLPTR
 };
 #endif
 
@@ -616,10 +617,10 @@ static const yytype_uint16 yytoknum[] =
 };
 # endif
 
-#define YYPACT_NINF -56
+#define YYPACT_NINF -57
 
 #define yypact_value_is_default(Yystate) \
-  (!!((Yystate) == (-56)))
+  (!!((Yystate) == (-57)))
 
 #define YYTABLE_NINF -1
 
@@ -630,15 +631,15 @@ static const yytype_uint16 yytoknum[] =
      STATE-NUM.  */
 static const yytype_int8 yypact[] =
 {
-      -7,   -38,     4,   -56,   -21,   -56,   -56,   -33,   -56,    22,
-      27,   -12,    29,   -13,    32,   -56,    -3,   -56,   -33,   -56,
-      19,   -56,   -56,   -44,     0,   -44,    -6,    -3,   -56,    -1,
-     -56,   -56,   -56,   -56,    31,   -56,     2,   -56,   -56,    -5,
-      10,    16,    39,   -44,   -56,   -56,   -56,     9,   -56,   -33,
-     -44,   -44,   -44,   -44,   -44,   -44,   -44,   -44,   -44,     0,
-     -44,     0,   -43,    51,   -56,   -55,   -55,   -55,   -55,   -55,
-     -50,   -50,   -56,   -56,    50,   -56,   -56,   -56,   -56,     0,
-     -56
+     -14,   -42,     4,   -57,   -28,   -57,   -57,   -37,   -57,    17,
+      19,   -18,    24,   -17,    27,   -57,    -1,   -57,   -37,   -57,
+      11,   -57,   -57,   -43,    -5,   -43,   -13,   -15,   -57,    23,
+     -57,     0,   -57,   -57,   -57,   -57,    -9,   -57,   -57,    -3,
+      20,    13,    41,   -43,    -1,    21,   -57,   -57,   -57,   -37,
+     -43,   -43,   -43,   -43,   -43,   -43,   -43,   -43,   -43,    -5,
+     -43,    -5,   -22,   -57,    52,   -57,   -56,   -56,   -56,   -56,
+     -56,   -48,   -48,   -57,   -57,    46,   -57,   -57,   -57,   -57,
+      -5,   -57
 };
 
   /* YYDEFACT[STATE-NUM] -- Default reduction number in state STATE-NUM.
@@ -646,29 +647,29 @@ static const yytype_int8 yypact[] =
      means the default is an error.  */
 static const yytype_uint8 yydefact[] =
 {
-       0,     0,     0,     5,     0,     1,     8,     0,     4,     0,
-       0,    11,     0,     0,     0,     6,     0,     3,     0,     7,
-       0,    26,    30,     0,     0,     0,     0,    29,    13,     0,
-      14,    15,    16,    17,     0,    12,     0,    31,    32,     0,
-       0,     0,     0,     0,    28,    18,    19,     0,    25,    10,
+       0,     0,     0,     4,     0,     1,     7,     0,     3,     0,
+       0,    10,     0,     0,     0,     5,     0,     2,     0,     6,
+       0,    18,    22,     0,     0,     0,     0,    21,    16,     0,
+      12,    25,    13,    14,    15,    11,     0,    32,    33,     0,
+       0,     0,     0,     0,     0,     0,    17,    23,    24,     9,
        0,     0,     0,     0,     0,     0,     0,     0,     0,     0,
-       0,     0,     0,     0,     9,    37,    38,    43,    39,    41,
-      33,    34,    35,    36,    21,    24,    23,    20,    27,     0,
-      22
+       0,     0,    27,    20,     0,     8,    38,    39,    42,    40,
+      41,    34,    35,    36,    37,    28,    31,    30,    26,    19,
+       0,    29
 };
 
   /* YYPGOTO[NTERM-NUM].  */
 static const yytype_int8 yypgoto[] =
 {
-     -56,   -56,   -56,   -56,   -56,    17,    47,   -23,    38,   -56,
-     -56,   -56,   -56,    59,   -56,   -56,    42,    20,   -17
+     -57,   -57,   -57,   -57,   -57,    26,    58,   -24,    68,   -57,
+     -57,    34,    48,   -57,   -57,   -57,   -57,    16,   -19
 };
 
   /* YYDEFGOTO[NTERM-NUM].  */
 static const yytype_int8 yydefgoto[] =
 {
-      -1,     2,     4,     8,     9,    12,    13,    27,    28,    29,
-      30,    31,    32,    33,    16,    48,    34,    39,    40
+      -1,     2,     4,     8,     9,    12,    13,    27,    28,    16,
+      46,    29,    30,    31,    32,    33,    34,    39,    40
 };
 
   /* YYTABLE[YYPACT[STATE-NUM]] -- What to do in state STATE-NUM.  If
@@ -676,26 +677,26 @@ static const yytype_int8 yydefgoto[] =
      number is the opposite.  If YYTABLE_NINF, syntax error.  */
 static const yytype_uint8 yytable[] =
 {
-      22,    41,    45,    14,     5,    77,    14,     6,    42,    55,
-      56,    57,    58,    37,    38,    23,    57,    58,    23,     1,
-       3,    55,    56,    57,    58,    11,    24,    10,    14,    24,
-      17,    18,    19,    20,    25,    21,    74,    25,    76,    36,
-       7,    43,    59,    75,    50,    51,    47,    52,    53,    54,
-      49,    60,    61,    63,    78,    26,    80,    26,    26,    55,
-      56,    57,    58,    62,    79,    35,    64,    46,    15,    44,
-      65,    66,    67,    68,    69,    70,    71,    72,    73
+      41,    14,    22,    47,     5,    14,    42,     6,    55,    56,
+      57,    58,     1,    23,    37,    38,     3,    23,    57,    58,
+      10,    11,    17,    14,    24,    18,    78,    19,    24,    20,
+      21,    36,    25,    44,    43,    75,    25,    77,    45,    49,
+       7,    76,    55,    56,    57,    58,    50,    51,    60,    52,
+      53,    54,    59,    26,    61,    79,    81,    26,    26,    62,
+      80,    55,    56,    57,    58,    64,    66,    67,    68,    69,
+      70,    71,    72,    73,    74,    65,    35,    15,    63,    48
 };
 
 static const yytype_uint8 yycheck[] =
 {
-       3,    24,     3,     6,     0,    48,     6,     3,    25,    64,
-      65,    66,    67,    57,    58,    18,    66,    67,    18,    26,
-      58,    64,    65,    66,    67,    58,    29,    48,     6,    29,
-       3,    43,     3,    46,    37,     3,    59,    37,    61,    20,
-      36,    47,    32,    60,    49,    50,    15,    52,    53,    54,
-      48,    35,    13,    44,     3,    58,    79,    58,    58,    64,
-      65,    66,    67,    43,    14,    18,    49,    29,     9,    27,
-      50,    51,    52,    53,    54,    55,    56,    57,    58
+      24,     6,     3,     3,     0,     6,    25,     3,    64,    65,
+      66,    67,    26,    18,    57,    58,    58,    18,    66,    67,
+      48,    58,     3,     6,    29,    43,    48,     3,    29,    46,
+       3,    20,    37,    48,    47,    59,    37,    61,    15,    48,
+      36,    60,    64,    65,    66,    67,    49,    50,    35,    52,
+      53,    54,    32,    58,    13,     3,    80,    58,    58,    43,
+      14,    64,    65,    66,    67,    44,    50,    51,    52,    53,
+      54,    55,    56,    57,    58,    49,    18,     9,    44,    31
 };
 
   /* YYSTOS[STATE-NUM] -- The (internal number of the) accessing
@@ -703,34 +704,34 @@ static const yytype_uint8 yycheck[] =
 static const yytype_uint8 yystos[] =
 {
        0,    26,    69,    58,    70,     0,     3,    36,    71,    72,
-      48,    58,    73,    74,     6,    81,    82,     3,    43,     3,
-      46,     3,     3,    18,    29,    37,    58,    75,    76,    77,
-      78,    79,    80,    81,    84,    74,    20,    57,    58,    85,
-      86,    75,    86,    47,    84,     3,    76,    15,    83,    48,
+      48,    58,    73,    74,     6,    76,    77,     3,    43,     3,
+      46,     3,     3,    18,    29,    37,    58,    75,    76,    79,
+      80,    81,    82,    83,    84,    74,    20,    57,    58,    85,
+      86,    75,    86,    47,    48,    15,    78,     3,    80,    48,
       49,    50,    52,    53,    54,    64,    65,    66,    67,    32,
-      35,    13,    85,    44,    73,    85,    85,    85,    85,    85,
-      85,    85,    85,    85,    75,    86,    75,    48,     3,    14,
-      75
+      35,    13,    85,    79,    44,    73,    85,    85,    85,    85,
+      85,    85,    85,    85,    85,    75,    86,    75,    48,     3,
+      14,    75
 };
 
   /* YYR1[YYN] -- Symbol number of symbol that rule YYN derives.  */
 static const yytype_uint8 yyr1[] =
 {
-       0,    68,    69,    69,    69,    70,    71,    72,    72,    73,
-      73,    74,    74,    75,    75,    75,    75,    75,    76,    76,
-      77,    78,    78,    79,    80,    81,    82,    83,    84,    84,
-      84,    85,    85,    85,    85,    85,    85,    86,    86,    86,
-      86,    86,    86,    86
+       0,    68,    69,    69,    70,    71,    72,    72,    73,    73,
+      74,    74,    75,    75,    75,    75,    75,    76,    77,    78,
+      79,    79,    79,    80,    80,    80,    81,    81,    82,    82,
+      83,    84,    85,    85,    85,    85,    85,    85,    86,    86,
+      86,    86,    86
 };
 
   /* YYR2[YYN] -- Number of symbols on the right hand side of rule YYN.  */
 static const yytype_uint8 yyr2[] =
 {
-       0,     2,     1,     4,     2,     1,     2,     3,     1,     5,
-       4,     1,     3,     1,     1,     1,     1,     1,     2,     2,
-       4,     4,     6,     4,     4,     3,     2,     3,     2,     1,
-       1,     1,     1,     3,     3,     3,     3,     3,     3,     3,
-       3,     3,     3,     3
+       0,     2,     4,     2,     1,     2,     3,     1,     5,     4,
+       1,     3,     1,     1,     1,     1,     1,     3,     2,     3,
+       3,     1,     1,     2,     2,     1,     4,     3,     4,     6,
+       4,     4,     1,     1,     3,     3,     3,     3,     3,     3,
+       3,     3,     3
 };
 
 
@@ -1414,236 +1415,231 @@ yyreduce:
   YY_REDUCE_PRINT (yyn);
   switch (yyn)
     {
-  case 3:
-#line 39 "parser.y"
+  case 2:
+#line 44 "parser.y"
     {
     printf("(%d) (program,%s,-,-)\n", quad_ruple_count, (yyvsp[-2].str));
     quad_ruple_count++;
 }
-#line 1424 "y.tab.c"
+#line 1425 "y.tab.c"
     break;
 
-  case 5:
-#line 43 "parser.y"
+  case 4:
+#line 48 "parser.y"
     {
     (yyval.str) = (yyvsp[0].str);
 }
-#line 1432 "y.tab.c"
+#line 1433 "y.tab.c"
     break;
 
-  case 7:
-#line 51 "parser.y"
+  case 6:
+#line 56 "parser.y"
     {
     printf("[info] Variable Declaration: %s of type integer.\n", (yyvsp[-1].str)); // 只作提示，以后要删除
 }
-#line 1440 "y.tab.c"
+#line 1441 "y.tab.c"
     break;
 
-  case 8:
-#line 53 "parser.y"
+  case 7:
+#line 58 "parser.y"
     {
     // do nothing
 }
-#line 1448 "y.tab.c"
+#line 1449 "y.tab.c"
     break;
 
-  case 9:
-#line 59 "parser.y"
+  case 8:
+#line 64 "parser.y"
     {
     (yyval.str) = (yyvsp[-4].str);
 }
-#line 1456 "y.tab.c"
+#line 1457 "y.tab.c"
     break;
 
-  case 10:
-#line 61 "parser.y"
+  case 9:
+#line 66 "parser.y"
     {
     (yyval.str) = (yyvsp[-3].str);
 }
-#line 1464 "y.tab.c"
+#line 1465 "y.tab.c"
     break;
 
-  case 11:
-#line 65 "parser.y"
+  case 10:
+#line 70 "parser.y"
     {
     (yyval.str) = (yyvsp[0].str);
 }
-#line 1472 "y.tab.c"
+#line 1473 "y.tab.c"
     break;
 
-  case 12:
-#line 67 "parser.y"
+  case 11:
+#line 72 "parser.y"
     {
     (yyval.str) = strcat((yyvsp[-2].str), ",");
     (yyval.str) = strcat((yyvsp[-2].str), (yyvsp[0].str));
 }
-#line 1481 "y.tab.c"
+#line 1482 "y.tab.c"
+    break;
+
+  case 12:
+#line 81 "parser.y"
+    {
+    printf("[info] Processed assignment.\n"); // 只作提示，以后要删除
+}
+#line 1490 "y.tab.c"
     break;
 
   case 13:
-#line 76 "parser.y"
+#line 83 "parser.y"
     {
-    printf("[info] Processing assignment.\n"); // 只作提示，以后要删除
+    printf("[info] Processed if.\n"); // 只作提示，以后要删除
 }
-#line 1489 "y.tab.c"
+#line 1498 "y.tab.c"
     break;
 
   case 14:
-#line 78 "parser.y"
+#line 85 "parser.y"
     {
-    printf("[info] Processing if.\n"); // 只作提示，以后要删除
+    printf("[info] Processed while.\n"); // 只作提示，以后要删除
 }
-#line 1497 "y.tab.c"
+#line 1506 "y.tab.c"
     break;
 
   case 15:
-#line 80 "parser.y"
+#line 87 "parser.y"
     {
-    printf("[info] Processing while.\n"); // 只作提示，以后要删除
+    printf("[info] Processed while.\n"); // 只作提示，以后要删除
 }
-#line 1505 "y.tab.c"
+#line 1514 "y.tab.c"
     break;
 
   case 16:
-#line 82 "parser.y"
+#line 89 "parser.y"
     {
-    printf("[info] Processing while.\n"); // 只作提示，以后要删除
+    printf("[info] Processed complex.\n"); // 只作提示，以后要删除
 }
-#line 1513 "y.tab.c"
-    break;
-
-  case 17:
-#line 84 "parser.y"
-    {
-    printf("[info] Processing complex.\n"); // 只作提示，以后要删除
-}
-#line 1521 "y.tab.c"
+#line 1522 "y.tab.c"
     break;
 
   case 18:
-#line 93 "parser.y"
+#line 96 "parser.y"
     {
-    (yyval.num) = (yyvsp[-1].num);
+    printf("[info] Beginning main part.\n"); // 只作提示，以后要删除
 }
-#line 1529 "y.tab.c"
+#line 1530 "y.tab.c"
     break;
 
   case 19:
-#line 95 "parser.y"
+#line 100 "parser.y"
+    {
+    printf("(%d) (sys , - , - , - )\n", quad_ruple_count);
+    printf("[info] Ending main part.\n"); // 只作提示，以后要删除
+    YYACCEPT;
+}
+#line 1540 "y.tab.c"
+    break;
+
+  case 23:
+#line 111 "parser.y"
     {
     (yyval.num) = (yyvsp[-1].num);
 }
-#line 1537 "y.tab.c"
+#line 1548 "y.tab.c"
     break;
 
-  case 20:
-#line 98 "parser.y"
+  case 24:
+#line 113 "parser.y"
+    {
+    (yyval.num) = (yyvsp[-1].num);
+}
+#line 1556 "y.tab.c"
+    break;
+
+  case 25:
+#line 115 "parser.y"
+    {
+    (yyval.num) = (yyvsp[0].num);
+}
+#line 1564 "y.tab.c"
+    break;
+
+  case 26:
+#line 118 "parser.y"
     {
     // 输出赋值的四元式
     printf("(%d) (:=, %s , - , %s)\n",quad_ruple_count, (yyvsp[-1].str), (yyvsp[-3].str));
     quad_ruple_count++;
     // 这里储存变量的值（后续如果有需要的话）（作业中不用实现）
 }
-#line 1548 "y.tab.c"
+#line 1575 "y.tab.c"
     break;
 
-  case 21:
-#line 110 "parser.y"
+  case 27:
+#line 123 "parser.y"
+    {
+    // 输出赋值的四元式
+    printf("(%d) (:=, %s , - , %s)\n",quad_ruple_count, (yyvsp[0].str), (yyvsp[-2].str));
+    quad_ruple_count++;
+    // 这里储存变量的值（后续如果有需要的话）（作业中不用实现）
+}
+#line 1586 "y.tab.c"
+    break;
+
+  case 28:
+#line 134 "parser.y"
     {
     // printf("(%d) (j,-,-,%s )\n",quad_ruple_count,);
     // quad_ruple_count++;
 }
-#line 1557 "y.tab.c"
+#line 1595 "y.tab.c"
     break;
 
-  case 22:
-#line 113 "parser.y"
+  case 29:
+#line 137 "parser.y"
     {
 
 }
-#line 1565 "y.tab.c"
+#line 1603 "y.tab.c"
     break;
 
-  case 23:
-#line 118 "parser.y"
+  case 30:
+#line 142 "parser.y"
     {
     // backpatch
     // printf("(%d) (j,-,-,%s )\n",quad_ruple_count,);
     // quad_ruple_count++;
 }
-#line 1575 "y.tab.c"
-    break;
-
-  case 24:
-#line 125 "parser.y"
-    {
-
-}
-#line 1583 "y.tab.c"
-    break;
-
-  case 25:
-#line 130 "parser.y"
-    {
-
-}
-#line 1591 "y.tab.c"
-    break;
-
-  case 26:
-#line 134 "parser.y"
-    {
-    printf("[info] Beginning main part.\n"); // 只作提示，以后要删除
-}
-#line 1599 "y.tab.c"
-    break;
-
-  case 27:
-#line 138 "parser.y"
-    {
-    printf("(%d) (sys , - , - , - )\n", quad_ruple_count);
-    printf("[info] Ending main part.\n"); // 只作提示，以后要删除
-    YYACCEPT;
-}
-#line 1609 "y.tab.c"
-    break;
-
-  case 28:
-#line 145 "parser.y"
-    {
-
-}
-#line 1617 "y.tab.c"
-    break;
-
-  case 29:
-#line 147 "parser.y"
-    {
-
-}
-#line 1625 "y.tab.c"
+#line 1613 "y.tab.c"
     break;
 
   case 31:
-#line 155 "parser.y"
+#line 149 "parser.y"
     {
-    char temp[20];
-    snprintf(temp, sizeof(temp), "%d", (yyvsp[0].num)); // 转换成str再传参
-    (yyval.str) = temp; 
+
 }
-#line 1635 "y.tab.c"
+#line 1621 "y.tab.c"
     break;
 
   case 32:
-#line 159 "parser.y"
+#line 158 "parser.y"
     {
-    (yyval.str) = (yyvsp[0].str); // 本身就是str，直接传值
+    char* temp = (char*)malloc(20);  // 动态分配空间
+    snprintf(temp, 20, "%d", (yyvsp[0].num));    // 转换成str再传参
+    (yyval.str) = strdup(temp); 
 }
-#line 1643 "y.tab.c"
+#line 1631 "y.tab.c"
     break;
 
   case 33:
-#line 161 "parser.y"
+#line 162 "parser.y"
+    {
+    (yyval.str) = strdup((yyvsp[0].str)); // 本身就是str，直接传值
+}
+#line 1639 "y.tab.c"
+    break;
+
+  case 34:
+#line 164 "parser.y"
     {
     tmp_count++;
     char* T;
@@ -1652,11 +1648,11 @@ yyreduce:
     quad_ruple_count++;
     (yyval.str) = T;// 修改后的传值
 }
-#line 1656 "y.tab.c"
+#line 1652 "y.tab.c"
     break;
 
-  case 34:
-#line 168 "parser.y"
+  case 35:
+#line 171 "parser.y"
     {
     tmp_count++;
     char* T;
@@ -1665,11 +1661,11 @@ yyreduce:
     quad_ruple_count++;
     (yyval.str) = T;// 修改后的传值
 }
-#line 1669 "y.tab.c"
+#line 1665 "y.tab.c"
     break;
 
-  case 35:
-#line 175 "parser.y"
+  case 36:
+#line 178 "parser.y"
     {
     tmp_count++;
     char* T;
@@ -1678,11 +1674,11 @@ yyreduce:
     quad_ruple_count++;
     (yyval.str) = T;// 修改后的传值
 }
-#line 1682 "y.tab.c"
+#line 1678 "y.tab.c"
     break;
 
-  case 36:
-#line 182 "parser.y"
+  case 37:
+#line 185 "parser.y"
     {
     tmp_count++;
     char* T;
@@ -1691,70 +1687,61 @@ yyreduce:
     quad_ruple_count++;
     (yyval.str) = T;// 修改后的传值
 }
-#line 1695 "y.tab.c"
-    break;
-
-  case 37:
-#line 225 "parser.y"
-    {
-    printf("(%d) (j<, %s, %s, %s)\n",quad_ruple_count,(yyvsp[-2].str),(yyvsp[0].str),quad_ruple_count+2);
-    quad_ruple_count++;
-}
-#line 1704 "y.tab.c"
+#line 1691 "y.tab.c"
     break;
 
   case 38:
 #line 228 "parser.y"
     {
-    printf("(%d) (j<=, %s, %s, %s)\n",quad_ruple_count,(yyvsp[-2].str),(yyvsp[0].str),quad_ruple_count+2);
-    quad_ruple_count++;
+    printf("(%d) (j<, %s, %s, %d)\n",quad_ruple_count,(yyvsp[-2].str),(yyvsp[0].str),quad_ruple_count+2);
+    printf("(%d) (j, - , - , ?)\n",quad_ruple_count+1);
+    quad_ruple_count+= 2;
 }
-#line 1713 "y.tab.c"
+#line 1701 "y.tab.c"
     break;
 
   case 39:
-#line 231 "parser.y"
+#line 232 "parser.y"
     {
+    printf("(%d) (j<=, %s, %s, %d)\n",quad_ruple_count,(yyvsp[-2].str),(yyvsp[0].str),quad_ruple_count+2);
+    printf("(%d) (j, - , - , ?)\n",quad_ruple_count+1);
+    quad_ruple_count+= 2;
 }
-#line 1720 "y.tab.c"
+#line 1711 "y.tab.c"
     break;
 
   case 40:
-#line 232 "parser.y"
+#line 236 "parser.y"
     {
-    printf("(%d) (j>, %s, %s, %s)\n",quad_ruple_count,(yyvsp[-2].str),(yyvsp[0].str),quad_ruple_count+2);
-    quad_ruple_count++;
+    printf("(%d) (j>, %s, %s, %d)\n",quad_ruple_count,(yyvsp[-2].str),(yyvsp[0].str),quad_ruple_count+2);
+    printf("(%d) (j, - , - , ?)\n",quad_ruple_count+1);
+    quad_ruple_count+= 2;
 }
-#line 1729 "y.tab.c"
+#line 1721 "y.tab.c"
     break;
 
   case 41:
-#line 235 "parser.y"
+#line 240 "parser.y"
     {
+    printf("(%d) (j>=, %s, %s, %d)\n",quad_ruple_count,(yyvsp[-2].str),(yyvsp[0].str),quad_ruple_count+2);
+    printf("(%d) (j, - , - , ?)\n",quad_ruple_count+1);
+    quad_ruple_count+= 2;
 }
-#line 1736 "y.tab.c"
+#line 1731 "y.tab.c"
     break;
 
   case 42:
-#line 236 "parser.y"
+#line 244 "parser.y"
     {
-    printf("(%d) (j>=, %s, %s, %s)\n",quad_ruple_count,(yyvsp[-2].str),(yyvsp[0].str),quad_ruple_count+2);
-    quad_ruple_count++;
+    printf("(%d) (j=, %s, %s, %d)\n",quad_ruple_count,(yyvsp[-2].str),(yyvsp[0].str),quad_ruple_count+2);
+    printf("(%d) (j, - , - , ?)\n",quad_ruple_count+1);
+    quad_ruple_count+= 2;
 }
+#line 1741 "y.tab.c"
+    break;
+
+
 #line 1745 "y.tab.c"
-    break;
-
-  case 43:
-#line 239 "parser.y"
-    {
-    printf("(%d) (j=, %s, %s, %s)\n",quad_ruple_count,(yyvsp[-2].str),(yyvsp[0].str),quad_ruple_count+2);
-    quad_ruple_count++;
-}
-#line 1754 "y.tab.c"
-    break;
-
-
-#line 1758 "y.tab.c"
 
       default: break;
     }
@@ -1986,7 +1973,7 @@ yyreturn:
 #endif
   return yyresult;
 }
-#line 288 "parser.y"
+#line 294 "parser.y"
 
 
 

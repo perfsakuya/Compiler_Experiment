@@ -6,7 +6,7 @@
 #include "tiny.h"
 int quad_ruple_count = 0; // 地址计数
 int tmp_count = 0;
-
+char* LTemp,RTemp;
 %}
 
 /* 声明 token 供后续使用, 同时也可以在 lex 中使用 */
@@ -19,6 +19,10 @@ int tmp_count = 0;
 %left ADD SUB
 %left MUL DIV 
 
+%left OR
+%left AND
+%right NOT
+
 /* 定义结构体, 使得 token 可以附带相应的数据信息(语义值) */
 %union {
     int num;
@@ -29,6 +33,7 @@ int tmp_count = 0;
 /* 指明不同 token 或者 规则 的数据类型 */
 %type <num> INTEGER assignment_statement meta_assignment 
 %type <str> program_name id variable_list calc_expression var_definition 
+// %type <boolvalue> bool_expression
 /* 根据规定，YACC仅对第一条规则感兴趣, 或者使用 %start 符号指定的起始规则 */
 %start program
 
@@ -36,7 +41,7 @@ int tmp_count = 0;
 
 // ---------------------------1 程序定义--------------------------------------
 // 1.1 <程序> → program <标识符> ; | program
-program: program | PROGRAM program_name SEMI LF {
+program: PROGRAM program_name SEMI LF {
     printf("(%d) (program,%s,-,-)\n", quad_ruple_count, $2);
     quad_ruple_count++;
 } | program temp_rule;
@@ -74,22 +79,35 @@ variable_list: id {
 // ---------------------------2 语句定义--------------------------------------
 // 2.0 <语句> → <赋值句>│<if句>│<while句>│<repeat句>│<复合句>
 statement: assignment_statement {
-    printf("[info] Processing assignment.\n"); // 只作提示，以后要删除
+    printf("[info] Processed assignment.\n"); // 只作提示，以后要删除
 } | if_statement {
-    printf("[info] Processing if.\n"); // 只作提示，以后要删除
+    printf("[info] Processed if.\n"); // 只作提示，以后要删除
 } | while_statement {
-    printf("[info] Processing while.\n"); // 只作提示，以后要删除
+    printf("[info] Processed while.\n"); // 只作提示，以后要删除
 } | repeat_statement {
-    printf("[info] Processing while.\n"); // 只作提示，以后要删除
+    printf("[info] Processed while.\n"); // 只作提示，以后要删除
 } | complex_statement {
-    printf("[info] Processing complex.\n"); // 只作提示，以后要删除
+    printf("[info] Processed complex.\n"); // 只作提示，以后要删除
 };
 
-// 2.1 <赋值句> → <标识符> := <算术表达式>
-// assignment_statement: id ASSIGNMENT calc_expression {
-//     printf("(%d) (:=, %s , - , %s)\n",quad_ruple_count, $3, $1);
-//     quad_ruple_count++;
-// };
+// 2.1 <复合句> → begin <语句表> end
+complex_statement: begin statement_list end;
+// 2.1.a.begin开始符号
+begin: BEG LF {
+    printf("[info] Beginning main part.\n"); // 只作提示，以后要删除
+};
+// 2.1.b.end结束符号
+end: END DOT LF {
+    printf("(%d) (sys , - , - , - )\n", quad_ruple_count);
+    printf("[info] Ending main part.\n"); // 只作提示，以后要删除
+    YYACCEPT;
+};
+
+// 2.2 <语句表> → <语句> (;x)<语句表>│<语句>   <<<这里和文档中的不一样，中间不加分号>>>
+statement_list: statement SEMI statement_list | statement | LF;
+
+// 2.3 <赋值句> → <标识符> := <算术表达式>
+// <<<有bug>>>
 assignment_statement: meta_assignment LF {
     $$ = $1;
 } | meta_assignment assignment_statement{
@@ -103,10 +121,9 @@ meta_assignment: id ASSIGNMENT calc_expression SEMI {
 };
 
 
-
 // <<<我们要用tiny.h中的backpatch和merge进行操作，从而达到状态转移的效果>>>
-
-// 2.2 <if句>→ if <布尔表达式> then <语句>│if <布尔表达式> then <语句> else <语句>
+// <<<未完成部分>>>
+// 2.4 <if句>→ if <布尔表达式> then <语句>│if <布尔表达式> then <语句> else <语句>
 if_statement: IF bool_comparison THEN statement {
     // printf("(%d) (j,-,-,%s )\n",quad_ruple_count,);
     // quad_ruple_count++;
@@ -114,50 +131,29 @@ if_statement: IF bool_comparison THEN statement {
 
 };
 
-// 2.3 <while句> → while <布尔表达式> do <语句>
+// 2.5 <while句> → while <布尔表达式> do <语句>
 while_statement: WHILE bool_comparison DO statement {
     // backpatch
     // printf("(%d) (j,-,-,%s )\n",quad_ruple_count,);
     // quad_ruple_count++;
 };
 
-// 2.4 <repeat句> → repeat <语句> until <布尔表达式>
+// 2.6 <repeat句> → repeat <语句> until <布尔表达式>
 repeat_statement: REPEAT statement UNTIL bool_comparison {
 
 };
 
-// 2.5 <复合句> → begin <语句表> end
-complex_statement: begin statement_list end {
-
-};
-// 2.5.a.begin开始符号
-begin: BEG LF {
-    printf("[info] Beginning main part.\n"); // 只作提示，以后要删除
-};
-// 2.5.b.end结束符号
-end: END DOT LF {
-    printf("(%d) (sys , - , - , - )\n", quad_ruple_count);
-    printf("[info] Ending main part.\n"); // 只作提示，以后要删除
-    YYACCEPT;
-};
-
-// 2.6 <语句表> → <语句> (;x)<语句表>│<语句>   <<<这里和文档中的不一样，中间不加分号>>>
-statement_list: statement statement_list {
-
-} | statement {
-
-} | LF;
 // --------------------------------------------------------------------------
 
 
 // ---------------------------3 表达式定义------------------------------------
 // 3.1 算术表达式
 calc_expression: INTEGER {
-    char temp[20];
-    snprintf(temp, sizeof(temp), "%d", $1); // 转换成str再传参
-    $$ = temp; 
+    char* temp = (char*)malloc(20);  // 动态分配空间
+    snprintf(temp, 20, "%d", $1);    // 转换成str再传参
+    $$ = strdup(temp); 
 } | id {
-    $$ = $1; // 本身就是str，直接传值
+    $$ = strdup($1); // 本身就是str，直接传值
 } | calc_expression ADD calc_expression {
     tmp_count++;
     char* T;
@@ -188,32 +184,33 @@ calc_expression: INTEGER {
     $$ = T;// 修改后的传值
 };
 
-// 3.2 <布尔表达式> → <布尔表达式> or <布尔项>│<布尔项>
-bool_expression: bool_expression OR bool_1 {
+// <<<未完成部分>>>
+// 3.2 <布尔表达式> → <布尔项> or <布尔表达式>│<布尔项> 这里反过来了一下，防止左递归
+// bool_expression: bool_1 OR bool_expression {
 
-} | bool_1 {
+// } | bool_1 {
 
-};
-// <布尔项> → <布尔项> and <布因子>│<布因子>
-bool_1: bool_1 AND bool_2 {
+// };
+// // <布尔项> → <布因子> and <布尔项> │ <布因子>
+// bool_1: bool_1 AND bool_2 {
 
-} | bool_2 {
+// } | bool_2 {
 
-};
-// <布因子> → <布尔量>│not <布因子>
-bool_2: bool_3 {
+// };
+// // <布因子> → <布尔量> │ not <布因子>
+// bool_2: bool_3 {
 
-} | NOT bool_2 {
+// } | NOT bool_2 {
 
-};
-// <布尔量> → <布尔常量>(未使用)│<标识符>│（ <布尔表达式> ）│ ...↓...
-bool_3: id {
+// };
+// // <布尔量> → <布尔常量>(未使用)│<标识符>│（ <布尔表达式> ）│ ...↓...
+// bool_3: id {
 
-} | LB bool_expression RB {
+// } | LB bool_expression RB {
 
-} | bool_comparison { // <标识符> <关系符> <标识符>│<算术表达式> <关系符> <算术表达式>
+// } | bool_comparison { // <标识符> <关系符> <标识符>│<算术表达式> <关系符> <算术表达式>
 
-};
+// };
 // bool_value: BOOLTRUE {
 //     $$ = $1;
 // }| BOOLFALSE {
@@ -221,24 +218,26 @@ bool_3: id {
 // };
 
 // 3.3 <布尔量> → <标识符> <关系符> <标识符>│<算术表达式> <关系符> <算术表达式>
-// 需要检查
 bool_comparison: calc_expression LT calc_expression {
-    printf("(%d) (j<, %s, %s, %s)\n",quad_ruple_count,$1,$3,quad_ruple_count+2);
-    quad_ruple_count++;
+    printf("(%d) (j<, %s, %s, %d)\n",quad_ruple_count,$1,$3,quad_ruple_count+2);
+    printf("(%d) (j, - , - , ?)\n",quad_ruple_count+1);
+    quad_ruple_count+= 2;
 } | calc_expression LE calc_expression {
-    printf("(%d) (j<=, %s, %s, %s)\n",quad_ruple_count,$1,$3,quad_ruple_count+2);
-    quad_ruple_count++;
+    printf("(%d) (j<=, %s, %s, %d)\n",quad_ruple_count,$1,$3,quad_ruple_count+2);
+    printf("(%d) (j, - , - , ?)\n",quad_ruple_count+1);
+    quad_ruple_count+= 2;
 } | calc_expression RT calc_expression {
-} | calc_expression RT calc_expression {
-    printf("(%d) (j>, %s, %s, %s)\n",quad_ruple_count,$1,$3,quad_ruple_count+2);
-    quad_ruple_count++;
+    printf("(%d) (j>, %s, %s, %d)\n",quad_ruple_count,$1,$3,quad_ruple_count+2);
+    printf("(%d) (j, - , - , ?)\n",quad_ruple_count+1);
+    quad_ruple_count+= 2;
 } | calc_expression RE calc_expression {
-} | calc_expression RE calc_expression {
-    printf("(%d) (j>=, %s, %s, %s)\n",quad_ruple_count,$1,$3,quad_ruple_count+2);
-    quad_ruple_count++;
+    printf("(%d) (j>=, %s, %s, %d)\n",quad_ruple_count,$1,$3,quad_ruple_count+2);
+    printf("(%d) (j, - , - , ?)\n",quad_ruple_count+1);
+    quad_ruple_count+= 2;
 } | calc_expression EQ calc_expression {
-    printf("(%d) (j=, %s, %s, %s)\n",quad_ruple_count,$1,$3,quad_ruple_count+2);
-    quad_ruple_count++;
+    printf("(%d) (j=, %s, %s, %d)\n",quad_ruple_count,$1,$3,quad_ruple_count+2);
+    printf("(%d) (j, - , - , ?)\n",quad_ruple_count+1);
+    quad_ruple_count+= 2;
 };
 // --------------------------------------------------------------------------
 
