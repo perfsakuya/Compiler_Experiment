@@ -18,26 +18,79 @@
 %union {
     int num;
     char *str;
+    int *boolvalue; // 0==false, 1==true
 }
 
 /* 指明不同 token 或者 规则 的数据类型 */
+%type <str> program_name id
 %type <num> INTEGER exp
-%type <str> PROGRAM program id
-%type <str> program_name
-/* 根据规定，YACC仅对第一条规则感兴趣, 或者使用 %start 符号指定的起始规则 */
-%start declaration
+%type <str> variable_list
 
+/* 根据规定，YACC仅对第一条规则感兴趣, 或者使用 %start 符号指定的起始规则 */
+%start program
 
 %%
 
+// 递归方法在这里实现，便于查看
+// 规则：program识别一次，var统一在begin前识别，begin之后识别main，main之后识别end.
+// 1.识别别开头声明 PROGRAM id;
+program: start | start program ; 
+// 2.识别变量声明 var a,b,c:integer;
+start: start declaration ; 
+ // 3.识别begin标识符
+declaration: declaration begin ;
+// 4.识别主函数
+begin: begin main ; 
+// 5. 识别end.
+main: main end ; 
+
+
+// 具体实现
 // 第一部分：识别开头声明 PROGRAM id;
-declaration: PROGRAM program_name SEMI LF {
-                printf("(program,%s,-,-)\n", $2);
-        };
+start: PROGRAM program_name SEMI LF {
+    printf("(program,%s,-,-)\n", $2);
+}
 program_name: id {
-        // printf("(program,%s,-,-)",$1); //程序启动
-                $$ = $1; // 假设标识符的值存储在联合体的 str 成员中
-        };
+    $$ = $1;
+}
+
+// 第二部分：变量常量声明
+declaration: VAR variable_list COLON INT SEMI LF {
+    printf("Variable Declaration: %s of type integer.\n", $2); // 只作提示，以后要删除
+}
+variable_list: id {
+    $$ = $1;
+} | variable_list COMMA id {
+    $$ = strcat($1, ",");
+    $$ = strcat($1, $3);
+}
+
+// 第三部分：begin开始符号
+begin: BEG LF {
+    printf("beginning main part.\n"); // 只作提示，以后要删除
+}
+
+// 第四部分：主程序
+main: OR LF{
+
+    printf("main part.\n"); // 只作提示，以后要删除
+
+
+}
+
+// 第五部分：end结束符号
+end: END DOT LF {
+    printf("(sys , - , - , - )\n");
+    printf("ending main part.\n"); // 只作提示，以后要删除
+    YYACCEPT;
+};
+
+
+
+
+
+
+statement: 
 
 // 声明 是总的语句的判别，每一句都是statment
 // statement: SEMI    {}

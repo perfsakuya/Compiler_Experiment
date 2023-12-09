@@ -10,7 +10,8 @@ int wordcount = 0;
 letter      [A-Za-z]
 digit       [0-9]
  // <标识符> → <字母>│<标识符> <数字>│<标识符> <字母>
-identifier ({letter}|_){letter}({letter}|{digit}|_)*
+identifier {letter}({letter}|{digit})*
+ // identifier ({letter}|_){letter}({letter}|{digit}|_)* // 貌似会产生奇怪的bug
  //整数
 integer {digit}+
  //字符常数和错误的字符常数
