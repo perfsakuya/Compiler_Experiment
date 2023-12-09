@@ -8,7 +8,7 @@
    This program is free software: you can redistribute it and/or modify
    it under the terms of the GNU General Public License as published by
    the Free Software Foundation, either version 3 of the License, or
-   (at your option) any later version. 
+   (at your option) any later version.
 
    This program is distributed in the hope that it will be useful,
    but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -72,22 +72,12 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include "tiny.h"
 int quad_ruple_count = 0; // 地址计数
 int tmp_count = 0;
 
-char* convertToString(int value) {
-    char buffer[20];
-    snprintf(buffer, sizeof(buffer), "%d", value);
 
-    // 分配足够的内存来存储转换后的字符串
-    char* result = (char*)malloc(strlen(buffer) + 1);
-    strcpy(result, buffer);
-
-    return result;
-}
-
-
-#line 91 "y.tab.c"
+#line 81 "y.tab.c"
 
 # ifndef YY_NULLPTR
 #  if defined __cplusplus
@@ -264,13 +254,13 @@ extern int yydebug;
 #if ! defined YYSTYPE && ! defined YYSTYPE_IS_DECLARED
 union YYSTYPE
 {
-#line 33 "parser.y"
+#line 23 "parser.y"
 
     int num;
     char *str;
     int *boolvalue; // 0==false, 1==true
 
-#line 274 "y.tab.c"
+#line 264 "y.tab.c"
 
 };
 typedef union YYSTYPE YYSTYPE;
@@ -582,9 +572,9 @@ static const yytype_uint8 yytranslate[] =
   /* YYRLINE[YYN] -- Source line where rule number YYN was defined.  */
 static const yytype_uint8 yyrline[] =
 {
-       0,    51,    51,    51,    53,    55,    57,    59,    64,    68,
-      72,    74,    77,    79,    84,    90,    95,    97,   100,   107,
-     111,   113,   120,   127,   134,   145
+       0,    41,    41,    41,    43,    45,    47,    49,    54,    58,
+      62,    64,    67,    69,    74,    80,    85,    87,    90,    97,
+     101,   103,   110,   117,   124,   168
 };
 #endif
 
@@ -1401,118 +1391,118 @@ yyreduce:
   switch (yyn)
     {
   case 8:
-#line 64 "parser.y"
+#line 54 "parser.y"
     {
     printf("(%d) (program,%s,-,-)\n", quad_ruple_count, (yyvsp[-2].str));
     quad_ruple_count++;
 }
-#line 1410 "y.tab.c"
+#line 1400 "y.tab.c"
     break;
 
   case 9:
-#line 68 "parser.y"
+#line 58 "parser.y"
     {
     (yyval.str) = (yyvsp[0].str);
 }
-#line 1418 "y.tab.c"
+#line 1408 "y.tab.c"
     break;
 
   case 10:
-#line 72 "parser.y"
+#line 62 "parser.y"
     {
     printf("[info] Variable Declaration: %s of type integer.\n", (yyvsp[-4].str)); // 只作提示，以后要删除
 }
-#line 1426 "y.tab.c"
+#line 1416 "y.tab.c"
     break;
 
   case 11:
-#line 74 "parser.y"
+#line 64 "parser.y"
     {
     // do nothing
 }
-#line 1434 "y.tab.c"
+#line 1424 "y.tab.c"
     break;
 
   case 12:
-#line 77 "parser.y"
+#line 67 "parser.y"
     {
     (yyval.str) = (yyvsp[0].str);
 }
-#line 1442 "y.tab.c"
+#line 1432 "y.tab.c"
     break;
 
   case 13:
-#line 79 "parser.y"
+#line 69 "parser.y"
     {
     (yyval.str) = strcat((yyvsp[-2].str), ",");
     (yyval.str) = strcat((yyvsp[-2].str), (yyvsp[0].str));
 }
-#line 1451 "y.tab.c"
+#line 1441 "y.tab.c"
     break;
 
   case 14:
-#line 84 "parser.y"
+#line 74 "parser.y"
     {
     printf("[info] Beginning main part.\n"); // 只作提示，以后要删除
 }
-#line 1459 "y.tab.c"
+#line 1449 "y.tab.c"
     break;
 
   case 15:
-#line 90 "parser.y"
+#line 80 "parser.y"
     {
     printf("[info] Processing assignment.\n"); // 只作提示，以后要删除
 }
-#line 1467 "y.tab.c"
+#line 1457 "y.tab.c"
     break;
 
   case 16:
-#line 95 "parser.y"
+#line 85 "parser.y"
     {
     (yyval.num) = (yyvsp[-1].num);
 }
-#line 1475 "y.tab.c"
+#line 1465 "y.tab.c"
     break;
 
   case 17:
-#line 97 "parser.y"
+#line 87 "parser.y"
     {
     (yyval.num) = (yyvsp[-1].num);
 }
-#line 1483 "y.tab.c"
+#line 1473 "y.tab.c"
     break;
 
   case 18:
-#line 100 "parser.y"
+#line 90 "parser.y"
     {
     // 输出赋值的四元式
     printf("(%d) (:=, %s , - , %s)\n",quad_ruple_count, (yyvsp[-1].str), (yyvsp[-3].str));
     quad_ruple_count++;
     // 这里储存变量的值（后续如果有需要的话）（作业中不用实现）
 }
-#line 1494 "y.tab.c"
+#line 1484 "y.tab.c"
     break;
 
   case 19:
-#line 107 "parser.y"
+#line 97 "parser.y"
     {
     char temp[20];
     snprintf(temp, sizeof(temp), "%d", (yyvsp[0].num)); // 转换成str再传参
     (yyval.str) = temp; 
 }
-#line 1504 "y.tab.c"
+#line 1494 "y.tab.c"
     break;
 
   case 20:
-#line 111 "parser.y"
+#line 101 "parser.y"
     {
     (yyval.str) = (yyvsp[0].str); // 本身就是str，直接传值
 }
-#line 1512 "y.tab.c"
+#line 1502 "y.tab.c"
     break;
 
   case 21:
-#line 113 "parser.y"
+#line 103 "parser.y"
     {
     tmp_count++;
     char* T;
@@ -1521,11 +1511,11 @@ yyreduce:
     quad_ruple_count++;
     (yyval.str) = T;// 修改后的传值
 }
-#line 1525 "y.tab.c"
+#line 1515 "y.tab.c"
     break;
 
   case 22:
-#line 120 "parser.y"
+#line 110 "parser.y"
     {
     tmp_count++;
     char* T;
@@ -1534,11 +1524,11 @@ yyreduce:
     quad_ruple_count++;
     (yyval.str) = T;// 修改后的传值
 }
-#line 1538 "y.tab.c"
+#line 1528 "y.tab.c"
     break;
 
   case 23:
-#line 127 "parser.y"
+#line 117 "parser.y"
     {
     tmp_count++;
     char* T;
@@ -1547,11 +1537,11 @@ yyreduce:
     quad_ruple_count++;
     (yyval.str) = T;// 修改后的传值
 }
-#line 1551 "y.tab.c"
+#line 1541 "y.tab.c"
     break;
 
   case 24:
-#line 134 "parser.y"
+#line 124 "parser.y"
     {
     tmp_count++;
     char* T;
@@ -1560,21 +1550,21 @@ yyreduce:
     quad_ruple_count++;
     (yyval.str) = T;// 修改后的传值
 }
-#line 1564 "y.tab.c"
+#line 1554 "y.tab.c"
     break;
 
   case 25:
-#line 145 "parser.y"
+#line 168 "parser.y"
     {
     printf("(%d) (sys , - , - , - )\n", quad_ruple_count);
     printf("[info] Ending main part.\n"); // 只作提示，以后要删除
     YYACCEPT;
 }
-#line 1574 "y.tab.c"
+#line 1564 "y.tab.c"
     break;
 
 
-#line 1578 "y.tab.c"
+#line 1568 "y.tab.c"
 
       default: break;
     }
@@ -1806,7 +1796,7 @@ yyreturn:
 #endif
   return yyresult;
 }
-#line 203 "parser.y"
+#line 226 "parser.y"
 
 
 

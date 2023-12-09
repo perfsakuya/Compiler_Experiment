@@ -3,20 +3,9 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include <tiny.h>
+#include "tiny.h"
 int quad_ruple_count = 0; // 地址计数
 int tmp_count = 0;
-
-char* convertToString(int value) {
-    char buffer[20];
-    snprintf(buffer, sizeof(buffer), "%d", value);
-
-    // 分配足够的内存来存储转换后的字符串
-    char* result = (char*)malloc(strlen(buffer) + 1);
-    strcpy(result, buffer);
-
-    return result;
-}
 
 %}
 
@@ -39,7 +28,7 @@ char* convertToString(int value) {
 
 /* 指明不同 token 或者 规则 的数据类型 */
 %type <num> INTEGER assignment_list meta_assignment 
-%type <str> program_name id variable_list exp
+%type <str> program_name id variable_list exp 
 
 /* 根据规定，YACC仅对第一条规则感兴趣, 或者使用 %start 符号指定的起始规则 */
 %start program
@@ -140,17 +129,18 @@ exp: INTEGER {
     quad_ruple_count++;
     $$ = T;// 修改后的传值
 };
-//4.2 while中的语句
+
+// 4.2 while中的语句
 comparison: exp LT exp {
     printf("(%d) (j<, %s, %s, %s)\n",quad_ruple_count,$1,$3,quad_ruple_count+2);
     quad_ruple_count++;
 } | exp LE exp {
     printf("(%d) (j<=, %s, %s, %s)\n",quad_ruple_count,$1,$3,quad_ruple_count+2);
     quad_ruple_count++;
-} | exp GT exp {
+} | exp RT exp {
     printf("(%d) (j>, %s, %s, %s)\n",quad_ruple_count,$1,$3,quad_ruple_count+2);
     quad_ruple_count++;
-} | exp GE exp {
+} | exp RE exp {
     printf("(%d) (j>=, %s, %s, %s)\n",quad_ruple_count,$1,$3,quad_ruple_count+2);
     quad_ruple_count++;
 } | exp EQ exp {
@@ -158,20 +148,20 @@ comparison: exp LT exp {
     quad_ruple_count++;
 }
 
-//------------------------Unfinished!!!---------------------------
-//我们要用tiny.h中的backpatch和merge进行操作，从而达到状态转移的效果
-//4.2 While 循环语句
-While: WHILE comparison statement {
+// -----------------------Unfinished!!!---------------------------
+// 我们要用tiny.h中的backpatch和merge进行操作，从而达到状态转移的效果
+// 4.2 While 循环语句
+While: WHILE comparison DO {
     printf("(%d) (j,-,-,%s )\n",quad_ruple_count,);
     quad_ruple_count++;
 };
 
-//4.3 If 语句
-If:IF comparison statement {
+// 4.3 If 语句
+If:IF comparison DO {
     printf("(%d) (j,-,-,%s )\n",quad_ruple_count,);
     quad_ruple_count++;
 }
-//--------------------end Unfinished!!-----------------------------
+// --------------------end Unfinished!!-----------------------------
 
 
 // 5.end结束符号
@@ -186,7 +176,7 @@ end: END DOT LF {
 
 
 
-// statement: 
+// 没用的旧东西
 
 // 声明 是总的语句的判别，每一句都是statment
 // statement: SEMI    {}
