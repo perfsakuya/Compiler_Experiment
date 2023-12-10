@@ -6,7 +6,7 @@
 #define MAX_SIZE 100
 int wordcount = 0;
 %}
-
+%option yylineno
 letter      [A-Za-z]
 digit       [0-9]
  // <标识符> → <字母>│<标识符> <数字>│<标识符> <字母>

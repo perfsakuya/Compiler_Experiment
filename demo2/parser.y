@@ -6,7 +6,9 @@
 #include "tiny.h"
 int quad_ruple_count = 0; // 地址计数
 int tmp_count = 0;
-char* LTemp,RTemp;
+extern int yylineno;
+extern char* yytext;
+
 %}
 
 /* 声明 token 供后续使用, 同时也可以在 lex 中使用 */
@@ -22,6 +24,8 @@ char* LTemp,RTemp;
 %left OR
 %left AND
 %right NOT
+%nonassoc WITHOUT_ELSE
+
 
 /* 定义结构体, 使得 token 可以附带相应的数据信息(语义值) */
 %union {
@@ -38,6 +42,7 @@ char* LTemp,RTemp;
 %start program
 
 %%
+
 
 // ---------------------------1 程序定义--------------------------------------
 // 1.1 <程序> → program <标识符> ; | program
@@ -78,6 +83,7 @@ variable_list: id {
 
 // ---------------------------2 语句定义--------------------------------------
 // 2.0 <语句> → <赋值句>│<if句>│<while句>│<repeat句>│<复合句>
+// <<<这里的各种_statement都不需要识别换行符LF和分号SEMI>>>
 statement: assignment_statement {
     printf("[info] Processed assignment.\n"); // 只作提示，以后要删除
 } | if_statement {
@@ -103,31 +109,39 @@ end: END DOT LF {
     YYACCEPT;
 };
 
-// 2.2 <语句表> → <语句> (;x)<语句表>│<语句>   <<<这里和文档中的不一样，中间不加分号>>>
-statement_list: statement SEMI statement_list | statement | LF;
+// 2.2 <语句表> → <语句> ; <语句表>│<语句> 这里做了一点修改以匹配其他语句
+statement_list: statement SEMI statement_list | statement SEMI LF statement_list | ;
 
 // 2.3 <赋值句> → <标识符> := <算术表达式>
-// <<<有bug>>>
-assignment_statement: meta_assignment LF {
-    $$ = $1;
-} | meta_assignment assignment_statement{
-    $$ = $1;
-};
-meta_assignment: id ASSIGNMENT calc_expression SEMI {
+assignment_statement: id ASSIGNMENT calc_expression {
     // 输出赋值的四元式
     printf("(%d) (:=, %s , - , %s)\n",quad_ruple_count, $3, $1);
     quad_ruple_count++;
     // 这里储存变量的值（后续如果有需要的话）（作业中不用实现）
-};
+};    
+// <<<bug备份>>>
+// assignment_statement: meta_assignment {
+
+//     $$ = $1;
+// } | meta_assignment SEMI assignment_statement{
+//     $$ = $1;
+// };
+// meta_assignment: id ASSIGNMENT calc_expression {
+//     // 输出赋值的四元式
+//     printf("(%d) (:=, %s , - , %s)\n",quad_ruple_count, $3, $1);
+//     quad_ruple_count++;
+//     // 这里储存变量的值（后续如果有需要的话）（作业中不用实现）
+// };
 
 
 // <<<我们要用tiny.h中的backpatch和merge进行操作，从而达到状态转移的效果>>>
 // <<<未完成部分>>>
 // 2.4 <if句>→ if <布尔表达式> then <语句>│if <布尔表达式> then <语句> else <语句>
-if_statement: IF bool_comparison THEN statement {
+
+if_statement: IF bool_comparison THEN statement %prec WITHOUT_ELSE {  // 消除冲突
     // printf("(%d) (j,-,-,%s )\n",quad_ruple_count,);
     // quad_ruple_count++;
-} | IF bool_comparison THEN statement ELSE statement {
+} | IF bool_comparison THEN statement ELSE statement { 
 
 };
 
@@ -286,8 +300,23 @@ bool_comparison: calc_expression LT calc_expression {
 //     };
 %%
 
+char* removeNewline(char *str) {
+    size_t length = strlen(str);
 
+    if (length > 0) {
+        // Check if the last character is a newline character
+        if (str[length - 1] == '\n') {
+            // Replace the newline character with a null terminator
+            str[length - 1] = '\0';
+        }
+    } else {
+        // If the string is empty, set it to NULL
+        free(str);
+        str = strdup("null");
+    }
 
+    return str;
+}
 
 int main() {
     extern FILE *yyin;
@@ -297,7 +326,8 @@ int main() {
 }
 // Linux 下注释掉这个函数
 void yyerror(char *msg) {
-    printf("[Error] encountered: %s \n", msg);
+    fprintf(stderr, "[%s] encountered at line %d.\nUnexpected character is: %s\n",msg, yylineno, removeNewline(yytext));
+    return 0;
 }
 // Linux 下注释掉这个函数
 int yywrap(){
