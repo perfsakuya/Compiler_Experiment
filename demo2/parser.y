@@ -24,6 +24,10 @@ extern char* yytext;
 %left OR
 %left AND
 %right NOT
+%left '+' '-'
+%left '*' '/'
+%right '='
+%right ASSIGN
 %nonassoc WITHOUT_ELSE
 
 
