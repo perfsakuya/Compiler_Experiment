@@ -63,6 +63,7 @@ typedef struct node
     int instr;
 }node;
 
+// 储存信息到node类型结构体中
 int filloperator(node* dst, char* src)
 {
     strcpy(dst->oper, src);
@@ -89,6 +90,7 @@ int copyaddr_fromnode(node* dst, node src)
     return 0;
 }
 
+// codelist结构体
 typedef struct codelist
 {
     int linecnt, capacity;
@@ -96,6 +98,7 @@ typedef struct codelist
     char** code;
 }codelist;
 
+// 创建codelist函数
 codelist* newcodelist()
 {
     codelist* p = (codelist*)malloc(sizeof(codelist));
@@ -106,13 +109,19 @@ codelist* newcodelist()
     return p;
 }
 
+// 返回dst的[索引]、[下一条四元式行数]的函数
 int get_temp_index(codelist* dst)
 {
     return dst->temp_index++;
 }
 
-int nextinstr(codelist* dst) { return dst->linecnt; }
+int nextinstr(codelist* dst) 
+{
+    return dst->linecnt; 
+}
 
+
+// 生成中间代码，存储在dst中
 int Gen(codelist* dst, char* str)
 {
 
@@ -134,6 +143,7 @@ int Gen(codelist* dst, char* str)
 
 char tmp[1024];
 
+// 空goto
 int gen_goto_blank(codelist* dst)
 {
     sprintf(tmp, "(j, -, - ,");
@@ -141,6 +151,7 @@ int gen_goto_blank(codelist* dst)
     return 0;
 }
 
+// 生成goto四元式
 int gen_goto(codelist* dst, int instrno)
 {
     //sprintf(tmp, "goto %d", instrno);
@@ -149,6 +160,7 @@ int gen_goto(codelist* dst, int instrno)
     return 0;
 }
 
+// 生成if四元式
 int gen_if(codelist* dst, node left, char* op, node right)
 {
     //sprintf(tmp, "if %s %s %s goto", left.addr, op, right.addr);
@@ -157,6 +169,8 @@ int gen_if(codelist* dst, node left, char* op, node right)
     return 0;
 }
 
+
+// 生成一、二、三地址的四元式
 int gen_1addr(codelist* dst, node left, char* op)
 {
     sprintf(tmp, "%s %s", left.addr, op);
@@ -180,12 +194,16 @@ int gen_3addr(codelist* dst, node left, node op1, char* op, node op2)
     return 0;
 }
 
+
+// 生成赋值语句四元式
 int gen_assignment(codelist* dst, node left, node right)
 {
     gen_2addr(dst, left, ":=", right);
     return 0;
 }
 
+
+// backpatch
 int backpatch(codelist* dst, instrlist* list, int instrno)
 {
     if (list != NULL)
@@ -204,6 +222,7 @@ int backpatch(codelist* dst, instrlist* list, int instrno)
     return 0;
 }
 
+// 输出
 int print(codelist* dst)
 {
     int i;
