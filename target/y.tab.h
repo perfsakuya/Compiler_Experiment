@@ -1,20 +1,20 @@
-/* A Bison parser, made by GNU Bison 2.4.2.  */
+/* A Bison parser, made by GNU Bison 3.4.1.  */
 
-/* Skeleton interface for Bison's Yacc-like parsers in C
-   
-      Copyright (C) 1984, 1989-1990, 2000-2006, 2009-2010 Free Software
-   Foundation, Inc.
-   
+/* Bison interface for Yacc-like parsers in C
+
+   Copyright (C) 1984, 1989-1990, 2000-2015, 2018-2019 Free Software Foundation,
+   Inc.
+
    This program is free software: you can redistribute it and/or modify
    it under the terms of the GNU General Public License as published by
    the Free Software Foundation, either version 3 of the License, or
    (at your option) any later version.
-   
+
    This program is distributed in the hope that it will be useful,
    but WITHOUT ANY WARRANTY; without even the implied warranty of
    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
    GNU General Public License for more details.
-   
+
    You should have received a copy of the GNU General Public License
    along with this program.  If not, see <http://www.gnu.org/licenses/>.  */
 
@@ -27,84 +27,95 @@
    special exception, which will cause the skeleton and the resulting
    Bison output files to be licensed under the GNU General Public
    License without this special exception.
-   
+
    This special exception was added by the Free Software Foundation in
    version 2.2 of Bison.  */
 
+/* Undocumented macros, especially those whose name start with YY_,
+   are private implementation details.  Do not rely on them.  */
 
-/* Tokens.  */
+#ifndef YY_YY_Y_TAB_H_INCLUDED
+# define YY_YY_Y_TAB_H_INCLUDED
+/* Debug traces.  */
+#ifndef YYDEBUG
+# define YYDEBUG 0
+#endif
+#if YYDEBUG
+extern int yydebug;
+#endif
+
+/* Token type.  */
 #ifndef YYTOKENTYPE
 # define YYTOKENTYPE
-   /* Put the tokens into the symbol table, so that GDB and other debuggers
-      know about them.  */
-   enum yytokentype {
-     LF = 258,
-     AND = 259,
-     ARR = 260,
-     BEG = 261,
-     BOOL = 262,
-     CALL = 263,
-     CASE = 264,
-     CHR = 265,
-     CONST = 266,
-     DIM = 267,
-     DO = 268,
-     ELSE = 269,
-     END = 270,
-     BOOLFALSE = 271,
-     FOR = 272,
-     IF = 273,
-     INPUT = 274,
-     INT = 275,
-     NOT = 276,
-     OF = 277,
-     OR = 278,
-     OUTPUT = 279,
-     PROCEDURE = 280,
-     PROGRAM = 281,
-     READ = 282,
-     REAL = 283,
-     REPEAT = 284,
-     SET = 285,
-     STOP = 286,
-     THEN = 287,
-     TO = 288,
-     BOOLTRUE = 289,
-     UNTIL = 290,
-     VAR = 291,
-     WHILE = 292,
-     WRITE = 293,
-     LB = 294,
-     RB = 295,
-     RCOMMENT = 296,
-     LCOMMENT = 297,
-     COMMA = 298,
-     DOT = 299,
-     TDOT = 300,
-     COLON = 301,
-     ASSIGNMENT = 302,
-     SEMI = 303,
-     LT = 304,
-     LE = 305,
-     NE = 306,
-     EQ = 307,
-     RT = 308,
-     RE = 309,
-     LC = 310,
-     RC = 311,
-     INTEGER = 312,
-     id = 313,
-     TRUECHAR = 314,
-     FALSECHAR = 315,
-     TRUECOMMENT = 316,
-     FALSECOMMENT = 317,
-     ILLEGALCHR = 318,
-     SUB = 319,
-     ADD = 320,
-     DIV = 321,
-     MUL = 322,
-     WITHOUT_ELSE = 323
-   };
+  enum yytokentype
+  {
+    LF = 258,
+    AND = 259,
+    ARR = 260,
+    BEG = 261,
+    BOOL = 262,
+    CALL = 263,
+    CASE = 264,
+    CHR = 265,
+    CONST = 266,
+    DIM = 267,
+    DO = 268,
+    ELSE = 269,
+    END = 270,
+    BOOLFALSE = 271,
+    FOR = 272,
+    IF = 273,
+    INPUT = 274,
+    INT = 275,
+    NOT = 276,
+    OF = 277,
+    OR = 278,
+    OUTPUT = 279,
+    PROCEDURE = 280,
+    PROGRAM = 281,
+    READ = 282,
+    REAL = 283,
+    REPEAT = 284,
+    SET = 285,
+    STOP = 286,
+    THEN = 287,
+    TO = 288,
+    BOOLTRUE = 289,
+    UNTIL = 290,
+    VAR = 291,
+    WHILE = 292,
+    WRITE = 293,
+    LB = 294,
+    RB = 295,
+    RCOMMENT = 296,
+    LCOMMENT = 297,
+    COMMA = 298,
+    DOT = 299,
+    TDOT = 300,
+    COLON = 301,
+    ASSIGN = 302,
+    SEMI = 303,
+    LT = 304,
+    LE = 305,
+    NE = 306,
+    EQ = 307,
+    RT = 308,
+    RE = 309,
+    LC = 310,
+    RC = 311,
+    INTEGER = 312,
+    id = 313,
+    TRUECHAR = 314,
+    FALSECHAR = 315,
+    TRUECOMMENT = 316,
+    FALSECOMMENT = 317,
+    ILLEGALCHR = 318,
+    ADD = 319,
+    SUB = 320,
+    MUL = 321,
+    DIV = 322,
+    WITHOUT_ELSE = 323
+  };
 #endif
 /* Tokens.  */
 #define LF 258
@@ -151,7 +162,7 @@
 #define DOT 299
 #define TDOT 300
 #define COLON 301
-#define ASSIGNMENT 302
+#define ASSIGN 302
 #define SEMI 303
 #define LT 304
 #define LE 305
@@ -168,22 +179,22 @@
 #define TRUECOMMENT 316
 #define FALSECOMMENT 317
 #define ILLEGALCHR 318
-#define SUB 319
-#define ADD 320
-#define DIV 321
-#define MUL 322
+#define ADD 319
+#define SUB 320
+#define MUL 321
+#define DIV 322
 #define WITHOUT_ELSE 323
 
-
-
-
+/* Value type.  */
 #if ! defined YYSTYPE && ! defined YYSTYPE_IS_DECLARED
 typedef int YYSTYPE;
 # define YYSTYPE_IS_TRIVIAL 1
-# define yystype YYSTYPE /* obsolescent; will be withdrawn */
 # define YYSTYPE_IS_DECLARED 1
 #endif
 
+
 extern YYSTYPE yylval;
 
+int yyparse (void);
 
+#endif /* !YY_YY_Y_TAB_H_INCLUDED  */

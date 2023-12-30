@@ -72,25 +72,27 @@ write        return WRITE;
 "/"          return DIV;
 "/*"         return LCOMMENT;
 ":"          return COLON;
-":="         return ASSIGNMENT;
+":="         { filloperator(&yylval, yytext);return ASSIGN;}
 ";"          return SEMI;
-"<"          return LT;
-"<="         return LE;
-"<>"         return NE;
-"="          return EQ;
-">"          return RT;
-">="         return RE;
+"<"          { filloperator(&yylval, yytext);return LT;}
+"<="         { filloperator(&yylval, yytext);return LE;}
+"<>"         { filloperator(&yylval, yytext);return NE;}
+"="          { filloperator(&yylval, yytext);return EQ;}
+">"          { filloperator(&yylval, yytext);return RT;}
+">="         { filloperator(&yylval, yytext);return RE;}
 "["          return LC;
 "]"          return RC;
 
 
 {identifier} {  // 标识符
 
-    yylval.str = strdup(yytext);
+    // yylval.str = strdup(yytext); // 弃用
+    filllexeme(&yylval, yytext);
     return id;
 }
 {integer}    {
-    yylval.num = atoi(yytext); 
+    // yylval.num = atoi(yytext);  // 弃用
+    filllexeme(&yylval, yytext);
     return INTEGER;
 }
 {char_const} { //字符常数
@@ -117,6 +119,10 @@ write        return WRITE;
 
 %%
 
+int yywrap() 
+{ 
+   return (1); 
+} 
 
 // // 定义键值对的结构体
 // struct KeyValue {

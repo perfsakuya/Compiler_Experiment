@@ -9,11 +9,16 @@ int tmp_count = 0;
 extern int yylineno;
 extern char* yytext;
 codelist* list;
+#define YYSTYPE node
+#include "y.tab.h"
+int yyerror();
+int yyerror(char* msg);
+extern int yylex();    
 %}
 
 /* 声明 token 供后续使用, 同时也可以在 lex 中使用 */
 %token LF AND ARR BEG BOOL CALL CASE CHR CONST DIM DO ELSE END BOOLFALSE FOR IF INPUT INT NOT OF OR OUTPUT PROCEDURE PROGRAM READ REAL REPEAT SET STOP THEN TO BOOLTRUE UNTIL VAR WHILE WRITE 
-%token LB RB RCOMMENT LCOMMENT COMMA DOT TDOT COLON ASSIGNMENT SEMI LT LE NE EQ RT RE LC RC
+%token LB RB RCOMMENT LCOMMENT COMMA DOT TDOT COLON ASSIGN SEMI LT LE NE EQ RT RE LC RC
 %token INTEGER id TRUECHAR FALSECHAR TRUECOMMENT FALSECOMMENT ILLEGALCHR
 
 /* %left 表示左结合, %right 表示右结合 */
@@ -117,9 +122,9 @@ end: END DOT LF {
 statement_list: statement SEMI statement_list | statement SEMI LF statement_list | ;
 
 // 2.3 <赋值句> → <标识符> := <算术表达式>
-assignment_statement: id ASSIGNMENT calc_expression {
+assignment_statement: id ASSIGN calc_expression {
     // 输出赋值的四元式
-    copyaddr(&$1, $1.lexeme); 
+    copyaddr(&$1, $1.lexeme);
     gen_assignment(list, $1, $3);
     // 这里储存变量的值（后续如果有需要的话）（作业中不用实现）
 };    
@@ -130,7 +135,7 @@ assignment_statement: id ASSIGNMENT calc_expression {
 // } | meta_assignment SEMI assignment_statement{
 //     $$ = $1;
 // };
-// meta_assignment: id ASSIGNMENT calc_expression {
+// meta_assignment: id ASSIGN calc_expression {
 //     // 输出赋值的四元式
 //     printf("(%d) (:=, %s , - , %s)\n",quad_ruple_count, $3, $1);
 //     quad_ruple_count++;
@@ -219,7 +224,7 @@ bool_2: bool_3 {
     $$.truelist = $2.falselist;
 };
 // <布尔量> → <布尔常量>(未使用)│<标识符>│（ <布尔表达式> ）│ ...↓...
-//这不会递归？
+// 这不会递归？
 bool_3:  LB bool_expression RB {
 
 } | bool_comparison { // <标识符> <关系符> <标识符>│<算术表达式> <关系符> <算术表达式>
@@ -285,7 +290,7 @@ N   :   {
 // 没用的旧东西
 // 声明 是总的语句的判别，每一句都是statment
 // statement: SEMI    {}
-//         |calc_expression ASSIGNMENT calc_expression SEMI    { printf("(:=,%d, - , %d)",$3,$1);} //赋值语句 
+//         |calc_expression ASSIGN calc_expression SEMI    { printf("(:=,%d, - , %d)",$3,$1);} //赋值语句 
 
 // expression: 表达式，表达式可以为单个整数, 或 表达式+运算符+表达式
         /* $$ 表示该条规则所返回的语义值 */
@@ -324,6 +329,7 @@ N   :   {
 //         $$ = $1 / $3; // don't care div 0
 //         printf("---> %d / %d = %d\n", $1, $3, $$);
 //     };
+// --------------------------------------------------------------------------
 %%
 
 char* removeNewline(char *str) {
@@ -357,7 +363,7 @@ int main() {
 }
 // Linux 下注释掉这个函数
 void yyerror(char *msg) {
-    fprintf(stderr, "[%s] encountered at line %d.\nUnexpected character is: %s\n",msg, yylineno, removeNewline(yytext));
+    fprintf(stderr, "[%s] encountered at line %d.\nUnexpected character is: %s\n",msg, yylineno, removeNewline(yytext)); // 输出错误信息的行数和错误的token
     return 0;
 }
 // Linux 下注释掉这个函数
