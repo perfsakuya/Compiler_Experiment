@@ -3,8 +3,8 @@
 #include <stdlib.h>
 #include <string.h>
 #include "y.tab.h" // 由 yacc -d 生成
-#define MAX_SIZE 100
-int wordcount = 0;
+// #define MAX_SIZE 100
+// int wordcount = 0;
 %}
 %option yylineno
 letter      [A-Za-z]
@@ -72,26 +72,28 @@ write        return WRITE;
 "/"          return DIV;
 "/*"         return LCOMMENT;
 ":"          return COLON;
-":="         return ASSIGNMENT;
+":="         { filloperator(&yylval, yytext); return ASSIGN; }
 ";"          return SEMI;
-"<"          return LT;
-"<="         return LE;
-"<>"         return NE;
-"="          return EQ;
-">"          return RT;
-">="         return RE;
+"<"          { filloperator(&yylval, yytext); return LT; }
+"<="         { filloperator(&yylval, yytext); return LE; }
+"<>"         { filloperator(&yylval, yytext); return NE; }
+"="          { filloperator(&yylval, yytext); return EQ; }
+">"          { filloperator(&yylval, yytext); return RT; }
+">="         { filloperator(&yylval, yytext); return RE; }
 "["          return LC;
 "]"          return RC;
 
 
 {identifier} {  // 标识符
 
-    yylval.str = strdup(yytext);
-    return id;
+    // yylval.str = strdup(yytext); // 弃用
+    filllexeme(&yylval, yytext);
+    return id; // 在test里面是大写ID
 }
-{integer}    {
-    yylval.num = atoi(yytext); 
-    return INTEGER;
+{integer}    { 
+    // yylval.num = atoi(yytext);  // 弃用
+    filllexeme(&yylval, yytext);
+    return INTEGER; // 在test里面是NUMBER
 }
 {char_const} { //字符常数
 
@@ -117,6 +119,10 @@ write        return WRITE;
 
 %%
 
+int yywrap() 
+{ 
+   return (1); 
+} 
 
 // // 定义键值对的结构体
 // struct KeyValue {
