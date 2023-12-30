@@ -4,16 +4,16 @@
 #include <stdlib.h>
 #include <string.h>
 #include "try.h"
+#include "y.tab.h"
+#define YYSTYPE node
+codelist* list;
+
 int quad_ruple_count = 0; // 地址计数
-int tmp_count = 0;
 extern int yylineno;
 extern char* yytext;
-codelist* list;
-#define YYSTYPE node
-#include "y.tab.h"
+extern int yylex();    
 int yyerror();
 int yyerror(char* msg);
-extern int yylex();    
 %}
 
 /* 声明 token 供后续使用, 同时也可以在 lex 中使用 */
@@ -37,6 +37,7 @@ extern int yylex();
 
 
 /* 定义结构体, 使得 token 可以附带相应的数据信息(语义值) */
+// 暂时不需要
 // %union {
 //     int num;
 //     char *str;

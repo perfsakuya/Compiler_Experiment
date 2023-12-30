@@ -3,8 +3,8 @@
 #include <stdlib.h>
 #include <string.h>
 #include "y.tab.h" // 由 yacc -d 生成
-#define MAX_SIZE 100
-int wordcount = 0;
+// #define MAX_SIZE 100
+// int wordcount = 0;
 %}
 %option yylineno
 letter      [A-Za-z]
@@ -72,14 +72,14 @@ write        return WRITE;
 "/"          return DIV;
 "/*"         return LCOMMENT;
 ":"          return COLON;
-":="         { filloperator(&yylval, yytext);return ASSIGN;}
+":="         { filloperator(&yylval, yytext); return ASSIGN; }
 ";"          return SEMI;
-"<"          { filloperator(&yylval, yytext);return LT;}
-"<="         { filloperator(&yylval, yytext);return LE;}
-"<>"         { filloperator(&yylval, yytext);return NE;}
-"="          { filloperator(&yylval, yytext);return EQ;}
-">"          { filloperator(&yylval, yytext);return RT;}
-">="         { filloperator(&yylval, yytext);return RE;}
+"<"          { filloperator(&yylval, yytext); return LT; }
+"<="         { filloperator(&yylval, yytext); return LE; }
+"<>"         { filloperator(&yylval, yytext); return NE; }
+"="          { filloperator(&yylval, yytext); return EQ; }
+">"          { filloperator(&yylval, yytext); return RT; }
+">="         { filloperator(&yylval, yytext); return RE; }
 "["          return LC;
 "]"          return RC;
 
@@ -88,12 +88,12 @@ write        return WRITE;
 
     // yylval.str = strdup(yytext); // 弃用
     filllexeme(&yylval, yytext);
-    return id;
+    return id; // 在test里面是大写ID
 }
-{integer}    {
+{integer}    { 
     // yylval.num = atoi(yytext);  // 弃用
     filllexeme(&yylval, yytext);
-    return INTEGER;
+    return INTEGER; // 在test里面是NUMBER
 }
 {char_const} { //字符常数
 
