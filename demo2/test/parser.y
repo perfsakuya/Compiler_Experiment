@@ -107,11 +107,11 @@ N   :   {
                 
 %%
 
-int yyerror(char* msg)
-{
-    printf("\nERROR with message: %s\n", msg);
-    return 0;
-}
+// int yyerror(char* msg)
+// {
+//     printf("\nERROR with message: %s\n", msg);
+//     return 0;
+// }
 
 
 int main()

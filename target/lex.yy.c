@@ -570,8 +570,8 @@ char *yytext;
 #include <stdlib.h>
 #include <string.h>
 #include "y.tab.h" // 由 yacc -d 生成
-#define MAX_SIZE 100
-int wordcount = 0;
+// #define MAX_SIZE 100
+// int wordcount = 0;
 #line 575 "lex.yy.c"
 #line 13 "scanner.l"
  // <标识符> → <字母>│<标识符> <数字>│<标识符> <字母>
@@ -1116,7 +1116,7 @@ return COLON;
 case 50:
 YY_RULE_SETUP
 #line 76 "scanner.l"
-{ filloperator(&yylval, yytext);return ASSIGN;}
+{ filloperator(&yylval, yytext); return ASSIGN; }
 	YY_BREAK
 case 51:
 YY_RULE_SETUP
@@ -1126,32 +1126,32 @@ return SEMI;
 case 52:
 YY_RULE_SETUP
 #line 78 "scanner.l"
-{ filloperator(&yylval, yytext);return LT;}
+{ filloperator(&yylval, yytext); return LT; }
 	YY_BREAK
 case 53:
 YY_RULE_SETUP
 #line 79 "scanner.l"
-{ filloperator(&yylval, yytext);return LE;}
+{ filloperator(&yylval, yytext); return LE; }
 	YY_BREAK
 case 54:
 YY_RULE_SETUP
 #line 80 "scanner.l"
-{ filloperator(&yylval, yytext);return NE;}
+{ filloperator(&yylval, yytext); return NE; }
 	YY_BREAK
 case 55:
 YY_RULE_SETUP
 #line 81 "scanner.l"
-{ filloperator(&yylval, yytext);return EQ;}
+{ filloperator(&yylval, yytext); return EQ; }
 	YY_BREAK
 case 56:
 YY_RULE_SETUP
 #line 82 "scanner.l"
-{ filloperator(&yylval, yytext);return RT;}
+{ filloperator(&yylval, yytext); return RT; }
 	YY_BREAK
 case 57:
 YY_RULE_SETUP
 #line 83 "scanner.l"
-{ filloperator(&yylval, yytext);return RE;}
+{ filloperator(&yylval, yytext); return RE; }
 	YY_BREAK
 case 58:
 YY_RULE_SETUP
@@ -1170,16 +1170,16 @@ YY_RULE_SETUP
 
     // yylval.str = strdup(yytext); // 弃用
     filllexeme(&yylval, yytext);
-    return id;
+    return id; // 在test里面是大写ID
 }
 	YY_BREAK
 case 61:
 YY_RULE_SETUP
 #line 94 "scanner.l"
-{
+{ 
     // yylval.num = atoi(yytext);  // 弃用
     filllexeme(&yylval, yytext);
-    return INTEGER;
+    return INTEGER; // 在test里面是NUMBER
 }
 	YY_BREAK
 case 62:
@@ -2248,11 +2248,6 @@ void yyfree (void * ptr )
 
 #line 121 "scanner.l"
 
-
-int yywrap() 
-{ 
-   return (1); 
-} 
 
 // // 定义键值对的结构体
 // struct KeyValue {

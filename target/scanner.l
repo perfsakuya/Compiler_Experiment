@@ -119,11 +119,6 @@ write        return WRITE;
 
 %%
 
-int yywrap() 
-{ 
-   return (1); 
-} 
-
 // // 定义键值对的结构体
 // struct KeyValue {
 //     char key[32];

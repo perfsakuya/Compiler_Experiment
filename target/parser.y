@@ -4,7 +4,6 @@
 #include <stdlib.h>
 #include <string.h>
 #include "try.h"
-#include "y.tab.h"
 #define YYSTYPE node
 codelist* list;
 
@@ -12,8 +11,8 @@ int quad_ruple_count = 0; // 地址计数
 extern int yylineno;
 extern char* yytext;
 extern int yylex();    
-int yyerror();
-int yyerror(char* msg);
+// int yyerror();
+// int yyerror(char* msg);
 %}
 
 /* 声明 token 供后续使用, 同时也可以在 lex 中使用 */
@@ -81,13 +80,21 @@ var_definition: variable_list COLON INT SEMI var_definition {
 } | variable_list COLON INT SEMI {
     $$ = $1;
 };
+
+
+
+
+// bug, 这里的生成方式要改
 // 1.4 <标识符表> → <标识符> ，<标识符表>│<标识符>
 variable_list: id {
     $$ = $1;
-} | id COMMA variable_list {
-    $$ = strcat($1, ",");
-    $$ = strcat($1, $3);
-};
+}
+
+//  | id COMMA variable_list {
+//     $$.var_name = strcat($1, ","); // <<<BUG>>>
+//     $$.var_name = strcat($1, $3);  // <<<BUG>>>
+// };
+
 // --------------------------------------------------------------------------
 
 
@@ -167,9 +174,12 @@ while_statement: WHILE M bool_comparison DO M statement {
 };
 
 // 2.6 <repeat句> → repeat <语句> until <布尔表达式>
-repeat_statement: REPEAT M statement UNTIL bool_expression M {
-    backpatch(list, $5.falselist, $2.instr);
-    backpatch(list, $5.truelist, $6instr);
+repeat_statement: REPEAT M statement UNTIL M bool_expression M {
+    backpatch(list,$3.nextlist, $5.instr);
+    backpatch(list, $6.falselist, $2.instr);
+    backpatch(list, $6.truelist, $7.instr);
+    // backpatch(list, $5.falselist, $2.instr);
+    // backpatch(list, $5.truelist, $6instr);
 };
 
 // --------------------------------------------------------------------------
@@ -178,11 +188,14 @@ repeat_statement: REPEAT M statement UNTIL bool_expression M {
 // ---------------------------3 表达式定义------------------------------------
 // 3.1 算术表达式
 calc_expression: INTEGER {
-    char* temp = (char*)malloc(20);  // 动态分配空间
-    // snprintf(temp, 20, "%d", $1);    // 转换成str再传参
-    $$ = strdup(temp); 
+    // char* temp = (char*)malloc(20);  // 动态分配空间
+    // // snprintf(temp, 20, "%d", $1);    // 转换成str再传参
+    // $$ = strdup(temp);  // <<<BUG>>>
+    copyaddr(&$$, $1.lexeme);
 } | id {
-    $$ = strdup($1); // 本身就是str，直接传值
+    // $$ = strdup($1); // 本身就是str，直接传值 // <<<BUG>>>
+    copyaddr(&$$, $1.lexeme);
+
 } | calc_expression ADD calc_expression {
     new_temp(&$$, get_temp_index(list));
     gen_3addr(list, $$, $1, "+", $3);
@@ -241,35 +254,35 @@ bool_3:  LB bool_expression RB {
 bool_comparison: calc_expression LT calc_expression {
     $$.truelist = new_instrlist(nextinstr(list));
     $$.falselist = new_instrlist(nextinstr(list)+1);
-    char op[1]={<};
+    char op[1]={"<"};
     gen_if(list, $1, op, $3);
     gen_goto_blank(list);
     
 } | calc_expression LE calc_expression {
     $$.truelist = new_instrlist(nextinstr(list));
     $$.falselist = new_instrlist(nextinstr(list)+1);
-    char op[2]={<=};
+    char op[2]={"<="};
     gen_if(list, $1, op, $3);
     gen_goto_blank(list);
     
 } | calc_expression RT calc_expression {
     $$.truelist = new_instrlist(nextinstr(list));
     $$.falselist = new_instrlist(nextinstr(list)+1);
-    char op[1]={>};
+    char op[1]={">"};
     gen_if(list, $1, op, $3);
     gen_goto_blank(list);
     
 } | calc_expression RE calc_expression {
     $$.truelist = new_instrlist(nextinstr(list));
     $$.falselist = new_instrlist(nextinstr(list)+1);
-    char op[2]={>=};
+    char op[2]={">="};
     gen_if(list, $1, op, $3);
     gen_goto_blank(list);
     
 } | calc_expression EQ calc_expression {
     $$.truelist = new_instrlist(nextinstr(list));
     $$.falselist = new_instrlist(nextinstr(list)+1);
-    char op[1]={=};
+    char op[1]={"="};
     gen_if(list, $1, op, $3);
     gen_goto_blank(list);
     
@@ -355,15 +368,16 @@ int main() {
     extern FILE *yyin;
     list = newcodelist();
 
-    freopen("test.in", "rt+", stdin);
+    freopen("test_program.txt", "rt+", stdin);
     
     yyparse();
     print(list);
     fclose(stdin);
     return 0;
 }
+
 // Linux 下注释掉这个函数
-void yyerror(char *msg) {
+int yyerror(char *msg) {
     fprintf(stderr, "[%s] encountered at line %d.\nUnexpected character is: %s\n",msg, yylineno, removeNewline(yytext)); // 输出错误信息的行数和错误的token
     return 0;
 }

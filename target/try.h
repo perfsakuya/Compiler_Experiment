@@ -66,6 +66,7 @@ typedef struct node
  char lexeme[256];
  char oper[3];
  int instr;
+ char* var_name;
 }node;
 
  int filloperator(node *dst, char *src)
