@@ -110,9 +110,9 @@ typedef struct codelist
    //new code lilst 新中间代码列表
  {
      codelist* p = (codelist*)malloc(sizeof(codelist));
-     p->linecnt = 100;
+     p->linecnt = 1;
      p->capacity = 1024;
-     p->temp_index = 100;
+     p->temp_index = 1;
      p->code = (char**)malloc(sizeof(char*)*1024);
      return p;
  }
@@ -197,7 +197,7 @@ typedef struct codelist
  int gen_assignment(codelist *dst, node left, node right)
      //generate assignment 生成赋值代码
  {
-     gen_2addr(dst, left, "-", right);
+     gen_2addr(dst, left, ":=", right);
      return 0;
  }
 
@@ -224,7 +224,7 @@ typedef struct codelist
  {
      int i;
      
-     for (i=100; i <= dst->linecnt; i++)
+     for (i=1; i <= dst->linecnt; i++)
          printf("%5d:  %s\n", i, dst->code[i]);
      return 0;
  }
