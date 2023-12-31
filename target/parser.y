@@ -55,46 +55,28 @@ extern int yylex();
 
 // ---------------------------1 程序定义--------------------------------------
 // 1.1 <程序> → program <标识符> ; | program
-program: PROGRAM program_name SEMI LF {
-    printf("(%d) (program,%s,-,-)\n", quad_ruple_count, $2);
-    quad_ruple_count++;
-} | program temp_rule;
+program:    PROGRAM program_name SEMI LF program
+            | VAR var_definition program
+            {
+                printf("[info] Variable Declaration: of type integer.\n"); // 只作提示，以后要删除
+            }
+            | BEG LF statement
+            {
+                printf("[info] BEGIN\n"); // 只作提示，以后要删除
+            }
+            ;
+
 program_name: id {
-    $$ = $1;
+    printf("(%d) (program,%s,-,-)\n", quad_ruple_count, $1.lexeme);
 };
-
-// 1.1.5 <临时规则> → <变量说明> <复合句>
-temp_rule: var_description complex_statement;
-
-// 1.2 <变量说明> → var <变量定义>│ε
-var_description: VAR var_definition LF {
-    printf("[info] Variable Declaration: %s of type integer.\n", $2); // 只作提示，以后要删除
-} | LF {
-    // do nothing
-};
-
-// 1.3 <变量定义> → <标识符表> ：<类型> ;<变量定义>│<标识符表> ：<类型> ;
-// 变量定义只能在一行进行
-var_definition: variable_list COLON INT SEMI var_definition {
-    $$ = $1;
-} | variable_list COLON INT SEMI {
-    $$ = $1;
-};
-
-
-
-
-// bug, 这里的生成方式要改
-// 1.4 <标识符表> → <标识符> ，<标识符表>│<标识符>
-variable_list: id {
-    $$ = $1;
-}
-
-//  | id COMMA variable_list {
-//     $$.var_name = strcat($1, ","); // <<<BUG>>>
-//     $$.var_name = strcat($1, $3);  // <<<BUG>>>
-// };
-
+var_definition : id COMMA var_definition
+                | id COLON INT SEMI var_definition
+                {
+                    printf("[info] FINISHI VAR\n"); // 只作提示，以后要删除
+                }
+                | LF
+                | {}
+                ;
 // --------------------------------------------------------------------------
 
 
