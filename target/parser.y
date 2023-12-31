@@ -70,10 +70,13 @@ program_name: id {
     printf("(%d) (program,%s,-,-)\n", quad_ruple_count, $1.lexeme);
 };
 var_definition : id COMMA var_definition
-                | id COLON INT LF
+                | id COLON INT SEMI var_definition
                 {
                     printf("[info] FINISHI VAR\n"); // 只作提示，以后要删除
                 }
+                | LF
+                | {}
+                ;
 // --------------------------------------------------------------------------
 
 
