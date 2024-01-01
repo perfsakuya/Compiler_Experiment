@@ -85,36 +85,37 @@ extern int yydebug;
     VAR = 291,
     WHILE = 292,
     WRITE = 293,
-    LB = 294,
-    RB = 295,
-    RCOMMENT = 296,
-    LCOMMENT = 297,
-    COMMA = 298,
-    DOT = 299,
-    TDOT = 300,
-    COLON = 301,
-    ASSIGN = 302,
-    SEMI = 303,
-    LT = 304,
-    LE = 305,
-    NE = 306,
-    EQ = 307,
-    RT = 308,
-    RE = 309,
-    LC = 310,
-    RC = 311,
-    INTEGER = 312,
-    id = 313,
-    TRUECHAR = 314,
-    FALSECHAR = 315,
-    TRUECOMMENT = 316,
-    FALSECOMMENT = 317,
-    ILLEGALCHR = 318,
-    ADD = 319,
-    SUB = 320,
-    MUL = 321,
-    DIV = 322,
-    WITHOUT_ELSE = 323
+    RELOP = 294,
+    LB = 295,
+    RB = 296,
+    RCOMMENT = 297,
+    LCOMMENT = 298,
+    COMMA = 299,
+    DOT = 300,
+    TDOT = 301,
+    COLON = 302,
+    ASSIGN = 303,
+    SEMI = 304,
+    LT = 305,
+    LE = 306,
+    NE = 307,
+    EQ = 308,
+    RT = 309,
+    RE = 310,
+    LC = 311,
+    RC = 312,
+    INTEGER = 313,
+    id = 314,
+    TRUECHAR = 315,
+    FALSECHAR = 316,
+    TRUECOMMENT = 317,
+    FALSECOMMENT = 318,
+    ILLEGALCHR = 319,
+    ADD = 320,
+    SUB = 321,
+    MUL = 322,
+    DIV = 323,
+    WITHOUT_ELSE = 324
   };
 #endif
 /* Tokens.  */
@@ -154,36 +155,37 @@ extern int yydebug;
 #define VAR 291
 #define WHILE 292
 #define WRITE 293
-#define LB 294
-#define RB 295
-#define RCOMMENT 296
-#define LCOMMENT 297
-#define COMMA 298
-#define DOT 299
-#define TDOT 300
-#define COLON 301
-#define ASSIGN 302
-#define SEMI 303
-#define LT 304
-#define LE 305
-#define NE 306
-#define EQ 307
-#define RT 308
-#define RE 309
-#define LC 310
-#define RC 311
-#define INTEGER 312
-#define id 313
-#define TRUECHAR 314
-#define FALSECHAR 315
-#define TRUECOMMENT 316
-#define FALSECOMMENT 317
-#define ILLEGALCHR 318
-#define ADD 319
-#define SUB 320
-#define MUL 321
-#define DIV 322
-#define WITHOUT_ELSE 323
+#define RELOP 294
+#define LB 295
+#define RB 296
+#define RCOMMENT 297
+#define LCOMMENT 298
+#define COMMA 299
+#define DOT 300
+#define TDOT 301
+#define COLON 302
+#define ASSIGN 303
+#define SEMI 304
+#define LT 305
+#define LE 306
+#define NE 307
+#define EQ 308
+#define RT 309
+#define RE 310
+#define LC 311
+#define RC 312
+#define INTEGER 313
+#define id 314
+#define TRUECHAR 315
+#define FALSECHAR 316
+#define TRUECOMMENT 317
+#define FALSECOMMENT 318
+#define ILLEGALCHR 319
+#define ADD 320
+#define SUB 321
+#define MUL 322
+#define DIV 323
+#define WITHOUT_ELSE 324
 
 /* Value type.  */
 #if ! defined YYSTYPE && ! defined YYSTYPE_IS_DECLARED

@@ -72,7 +72,7 @@ program_name: id {
 var_definition : id COMMA var_definition
                 | id COLON INT SEMI var_definition
                 {
-                    printf("[info] FINISHI VAR\n"); // 只作提示，以后要删除
+                    printf("[info] FINISH VAR\n"); // 只作提示，以后要删除
                 }
                 | LF
                 | {}
@@ -83,7 +83,7 @@ var_definition : id COMMA var_definition
 // ---------------------------2 语句定义--------------------------------------
 // 2.0 <语句> → <赋值句>│<if句>│<while句>│<repeat句>│<复合句>
 // <<<这里的各种_statement都不需要识别换行符LF和分号SEMI>>>
-statement : IF expression THEN M statement
+statement : IF expression THEN M statement %prec WITHOUT_ELSE
             {
                 backpatch(list, $2.truelist, $4.instr);
                 $$.nextlist = merge($2.falselist, $5.nextlist); 
@@ -126,10 +126,11 @@ statement : IF expression THEN M statement
             {
                 $$.nextlist = $2.nextlist;
             }
-            |END DOT statement
+            |END DOT LF
             {
                 //差一个回填backpatch即可完成
-                printf("[info] FINISHI PROGRAM\n"); // 只作提示，以后要删除
+                printf("[info] FINISH PROGRAM\n"); // 只作提示，以后要删除
+                YYACCEPT; // 结束
             }
             |{}
             ;
@@ -144,10 +145,10 @@ L   :   L SEMI M statement
             $$.nextlist = $1.nextlist;
         }
         ;
-//改成expression形式 分为布尔 AND OR NOT RELOP 与calc_expression
+// 改成expression形式 分为布尔 AND OR NOT RELOP 与calc_expression
 
-//RELOP 为各种表达
-//"<"|"<="|">"|">="|"!="|"="    { filloperator(&yylval, yytext); return( RELOP ); }
+// RELOP 为各种表达
+// "<"|"<="|">"|">="|"!="|"="    { filloperator(&yylval, yytext); return( RELOP ); }
 expression   :   expression AND M expression    
         {   
             backpatch(list, $1.truelist, $3.instr);
@@ -179,7 +180,7 @@ expression   :   expression AND M expression
             copyaddr_fromnode(&$$, $1);
         }
         ;
-//一些辅助符号
+// 一些辅助符号
 
 calc_expression: INTEGER 
                 {
@@ -246,14 +247,16 @@ char* removeNewline(char *str) {
 int main() {
     list = newcodelist();
 
-    freopen("test.in", "rt+", stdin);
-    freopen("test.out", "wt+", stdout);
-
+    // 这里改了一下，直接在cmd里面输出，方便调试，以后可以改回来
+    // freopen("test_program.txt", "rt+", stdin);
+    // freopen("test.out", "wt+", stdout);
+    extern FILE *yyin;
+    yyin = stdin;
     yyparse();
     print(list);
     
-    fclose(stdin);
 
+    fclose(stdin);
     fclose(stdout);
     return 0;
 }
