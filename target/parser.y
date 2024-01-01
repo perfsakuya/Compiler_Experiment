@@ -16,7 +16,7 @@ extern int yylex();
 %}
 
 /* 声明 token 供后续使用, 同时也可以在 lex 中使用 */
-%token LF AND ARR BEG BOOL CALL CASE CHR CONST DIM DO ELSE END BOOLFALSE FOR IF INPUT INT NOT OF OR OUTPUT PROCEDURE PROGRAM READ REAL REPEAT SET STOP THEN TO BOOLTRUE UNTIL VAR WHILE WRITE 
+%token LF AND ARR BEG BOOL CALL CASE CHR CONST DIM DO ELSE END BOOLFALSE FOR IF INPUT INT NOT OF OR OUTPUT PROCEDURE PROGRAM READ REAL REPEAT SET STOP THEN TO BOOLTRUE UNTIL VAR WHILE WRITE RELOP
 %token LB RB RCOMMENT LCOMMENT COMMA DOT TDOT COLON ASSIGN SEMI LT LE NE EQ RT RE LC RC
 %token INTEGER id TRUECHAR FALSECHAR TRUECOMMENT FALSECOMMENT ILLEGALCHR
 
@@ -83,13 +83,13 @@ var_definition : id COMMA var_definition
 // ---------------------------2 语句定义--------------------------------------
 // 2.0 <语句> → <赋值句>│<if句>│<while句>│<repeat句>│<复合句>
 // <<<这里的各种_statement都不需要识别换行符LF和分号SEMI>>>
-statement : IF bool_comparison THEN M statement
+statement : IF expression THEN M statement
             {
                 backpatch(list, $2.truelist, $4.instr);
-                $$.nextlist = $5.nextlist;
+                $$.nextlist = merge($2.falselist, $5.nextlist); 
             }
 
-            |IF bool_comparison THEN M statement ELSE LF N M statement
+            |IF expression THEN M statement ELSE LF N M statement
             {
                 backpatch(list, $2.truelist, $4.instr);    
                 backpatch(list, $2.falselist, $9.instr);
@@ -97,7 +97,7 @@ statement : IF bool_comparison THEN M statement
                 $$.nextlist = merge($5.nextlist, $10.nextlist);
             }
 
-            |WHILE M bool_comparison DO M statement
+            |WHILE M expression DO M statement
             {
                 backpatch(list, $6.nextlist, $2.instr);    
                 backpatch(list, $3.truelist, $5.instr);
@@ -105,71 +105,82 @@ statement : IF bool_comparison THEN M statement
                 gen_goto(list, $2.instr);
             }
 
-            |REPEAT M statement UNTIL M bool_comparison M statement
+            |REPEAT M statement UNTIL M expression M statement
             {
                 backpatch(list,$3.nextlist, $5.instr);
                 backpatch(list, $6.falselist, $2.instr);
                 backpatch(list, $6.truelist, $7.instr);
             }
 
-            |id ASSIGN calc_expression
+            |calc_expression ASSIGN expression
             {
-                copyaddr(&$1,$1.lexeme);
-                gen_assignment(list,$1,$3);
+                copyaddr(&$1, $1.lexeme); 
+                gen_assignment(list, $1, $3);
             }
 
-            |LF statement
+            |L
+            {
+                $$.nextlist = $1.nextlist;
+            }
+            |LF statement 
             {
                 $$.nextlist = $2.nextlist;
             }
-
-            |END DOT
+            |END DOT statement
+            {
+                //差一个回填backpatch即可完成
+                printf("[info] FINISHI PROGRAM\n"); // 只作提示，以后要删除
+            }
+            |{}
             ;
 
-bool_comparison: calc_expression LT calc_expression 
-                {
-                    $$.truelist = new_instrlist(nextinstr(list));
-                    $$.falselist = new_instrlist(nextinstr(list)+1);
-                    char op[1]={"<"};
-                    gen_if(list, $1, op, $3);
-                    gen_goto_blank(list);
-                } 
+L   :   L SEMI M statement
+        {
+            backpatch(list, $1.nextlist, $3.instr);
+            $$.nextlist = $4.nextlist;
+        }
+        |statement
+        {
+            $$.nextlist = $1.nextlist;
+        }
+        ;
+//改成expression形式 分为布尔 AND OR NOT RELOP 与calc_expression
 
-                |calc_expression LE calc_expression 
-                {
-                    $$.truelist = new_instrlist(nextinstr(list));
-                    $$.falselist = new_instrlist(nextinstr(list)+1);
-                    char op[2]={"<="};
-                    gen_if(list, $1, op, $3);
-                    gen_goto_blank(list);
-                } 
+//RELOP 为各种表达
+//"<"|"<="|">"|">="|"!="|"="    { filloperator(&yylval, yytext); return( RELOP ); }
+expression   :   expression AND M expression    
+        {   
+            backpatch(list, $1.truelist, $3.instr);
+            $$.truelist = $4.truelist; 
+            $$.falselist = merge($1.falselist, $4.falselist); 
+        }
+        |expression OR M expression
+        {
+            backpatch(list, $1.falselist, $3.instr);
+            $$.falselist = $4.falselist; 
+            $$.truelist = merge($1.truelist, $4.truelist); 
+        }
+        |NOT expression
+        {
+            $$.truelist = $2.falselist;
+            $$.falselist = $2.truelist;
+        }
 
-                |calc_expression RT calc_expression 
-                {
-                    $$.truelist = new_instrlist(nextinstr(list));
-                    $$.falselist = new_instrlist(nextinstr(list)+1);
-                    char op[1]={">"};
-                    gen_if(list, $1, op, $3);
-                    gen_goto_blank(list);
-                } 
+        |calc_expression RELOP calc_expression
+        {   
+            $$.truelist = new_instrlist(nextinstr(list));
+            $$.falselist = new_instrlist(nextinstr(list)+1);
+            gen_if(list, $1, $2.oper, $3);
+            gen_goto_blank(list); 
+        }
+                
+        |calc_expression
+        {
+            copyaddr_fromnode(&$$, $1);
+        }
+        ;
+//一些辅助符号
 
-                |calc_expression RE calc_expression 
-                {
-                    $$.truelist = new_instrlist(nextinstr(list));
-                    $$.falselist = new_instrlist(nextinstr(list)+1);
-                    char op[2]={">="};
-                    gen_if(list, $1, op, $3);
-                    gen_goto_blank(list);
-                }
-
-                |calc_expression EQ calc_expression 
-                {
-                    $$.truelist = new_instrlist(nextinstr(list));
-                    $$.falselist = new_instrlist(nextinstr(list)+1);
-                    char op[1]={"="};
-                    gen_if(list, $1, op, $3);
-                    gen_goto_blank(list);
-                };
 calc_expression: INTEGER 
                 {
                     copyaddr(&$$, $1.lexeme);
@@ -201,7 +212,7 @@ calc_expression: INTEGER
                 {
                     copyaddr(&$$, $1.lexeme);
                 };
-//一些辅助符号
+
 
 M   :   { $$.instr = nextinstr(list); }
         ;
