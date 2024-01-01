@@ -67,7 +67,6 @@ typedef struct node
     char lexeme[256];
     char oper[3];
     int instr;
-    char* var_name;
 }node;
 
 int filloperator(node* dst, char* src)
@@ -147,10 +146,10 @@ int Gen(codelist* dst, char* str)
 }
 
 char tmp[1024];
-
 int gen_goto_blank(codelist* dst)
 //geterate goto blank跳转中间代码 目标暂时为空
 {
+    sprintf(tmp, "(j, -, - ,");
     Gen(dst, tmp);
     return 0;
 }
@@ -158,6 +157,7 @@ int gen_goto_blank(codelist* dst)
 int gen_goto(codelist* dst, int instrno)
 //generate goto无条件跳转的中间代码 目标instrno
 {
+    //sprintf(tmp, "goto %d", instrno);
     sprintf(tmp, "(j, -, -, %d)", instrno);
     Gen(dst, tmp);
     return 0;
@@ -166,6 +166,7 @@ int gen_goto(codelist* dst, int instrno)
 int gen_if(codelist* dst, node left, char* op, node right)
 //generate if条件跳转的中间代码 目标暂时为空
 {
+    //sprintf(tmp, "if %s %s %s goto", left.addr, op, right.addr);
     sprintf(tmp, "(j%s, %s, %s,", op, left.addr, right.addr);
     Gen(dst, tmp);
     return 0;
@@ -182,6 +183,7 @@ int gen_1addr(codelist* dst, node left, char* op)
 int gen_2addr(codelist* dst, node left, char* op, node right)
 //二地址中间代码
 {
+    //sprintf(tmp, "%s = %s %s", left.addr, op, right.addr);
     sprintf(tmp, "(%s, %s, -, %s)", op, right.addr, left.addr);
     Gen(dst, tmp);
     return 0;
@@ -190,6 +192,7 @@ int gen_2addr(codelist* dst, node left, char* op, node right)
 int gen_3addr(codelist* dst, node left, node op1, char* op, node op2)
 //三地址中间代码
 {
+    //sprintf(tmp, "%s = %s %s %s", left.addr, op1.addr, op, op2.addr);
     sprintf(tmp, "(%s, %s, %s, %s) ", op, op1.addr, op2.addr, left.addr);
     Gen(dst, tmp);
     return 0;
@@ -220,13 +223,13 @@ int backpatch(codelist* dst, instrlist* list, int instrno)
     }
     return 0;
 }
-
 int print(codelist* dst)
 {
     int i;
 
     for (i = 1; i < dst->linecnt; i++)
         printf("(%d)   %s\n", i, dst->code[i]);
+    printf("(%d)   %s\n", i, "(sys, -, -, -)");
     return 0;
 }
 
