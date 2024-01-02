@@ -1,0 +1,10 @@
+program example1;
+var X, Y, Z, M: integer;
+begin
+    X := 2; Y := 6; Z := 4; M := 3;
+    while X < Z and Y > M do
+        if X = 2 then Z := Z + 1
+        else
+            while X <= M do
+                X := X * 2
+end.
