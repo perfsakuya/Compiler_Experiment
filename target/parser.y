@@ -82,11 +82,10 @@ var_definition : id COMMA var_definition
 
 
 // ---------------------------2 语句定义--------------------------------------
-// 2.0 <语句> → <赋值句>│<if句>│<while句>│<repeat句>│<复合句>
-// <<<这里的各种_statement都不需要识别换行符LF和分号SEMI>>>
+// <语句> → <赋值句>│<if句>│<while句>│<repeat句>│<复合句>
 statement : IF expression THEN M statement 
             {
-                backpatch(list, $2.truelist, $4.instr);
+                backpatch(list, $3.truelist, $$.instr);
                 $$.nextlist = merge($2.falselist, $5.nextlist); 
             }
 
@@ -124,7 +123,6 @@ statement : IF expression THEN M statement
             }
             |END DOT
             {
-                // 差一个回填backpatch即可完成
                 printf("[info] FINISH PROGRAM\n"); // 只作提示，以后要删除
                 YYACCEPT; // 结束
             }
@@ -178,7 +176,7 @@ expression   :   expression AND M expression
         ;
 // 一些辅助符号
 
-calc_expression: INTEGER 
+calc_expression :   INTEGER 
                 {
                     copyaddr(&$$, $1.lexeme);
                 }
@@ -208,9 +206,8 @@ calc_expression: INTEGER
                 |id 
                 {
                     copyaddr(&$$, $1.lexeme);
-                };
-
-
+                }
+                ;
 M   :   { $$.instr = nextinstr(list); }
         ;
 
