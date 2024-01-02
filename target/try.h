@@ -1,6 +1,3 @@
-#ifndef CP_H
-#define CP_H
-
 #include <stdio.h>
 #include <string.h>
 #include <malloc.h>
@@ -241,4 +238,4 @@ int print(codelist *dst, char *prog_name)
     return 0;
 }
 
-#endif
+
