@@ -7,7 +7,8 @@
 #define YYSTYPE node
 codelist* list;
 
-int quad_ruple_count = 0; // 地址计数
+char* prog_name;
+// int quad_ruple_count = 0; // 地址计数
 extern int yylineno;
 extern char* yytext;
 extern int yylex();    
@@ -67,7 +68,8 @@ program:    PROGRAM program_name SEMI LF program
             ;
 
 program_name: id {
-    printf("(%d) (program,%s,-,-)\n", quad_ruple_count, $1.lexeme);
+    prog_name = $1.lexeme;
+    // printf("(%d) (program,%s,-,-)\n", quad_ruple_count, $1.lexeme);
 };
 var_definition : id COMMA var_definition
                 | id COLON INT SEMI var_definition
@@ -126,11 +128,11 @@ statement : IF expression THEN M statement
             {
                 $$.nextlist = $2.nextlist;
             }
-            |END DOT statement
+            |END DOT LF
             {
                 // 差一个回填backpatch即可完成
                 printf("[info] FINISH PROGRAM\n"); // 只作提示，以后要删除
-                // YYACCEPT; // 结束
+                YYACCEPT; // 结束
             }
             |{}
             ;
@@ -249,12 +251,12 @@ int main() {
 
     // 这里改了一下，直接在cmd里面输出，方便调试，以后可以改回来
     // freopen("test_program.txt", "rt+", stdin);
-    // freopen("test.out", "wt+", stdout);
+    // freopen("test_out.txt", "wt+", stdout);
+    
     extern FILE *yyin;
     yyin = stdin;
     yyparse();
-    print(list);
-    
+    print(list, prog_name);
 
     fclose(stdin);
     fclose(stdout);
