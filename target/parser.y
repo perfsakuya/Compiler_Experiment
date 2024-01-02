@@ -263,7 +263,7 @@ int main() {
 
 // Linux 下注释掉这个函数
 int yyerror(char *msg) {
-    fprintf(stderr, "[%s] encountered at line %d.\nUnexpected character is: %s\n",msg, yylineno, removeNewline(yytext)); // 输出错误信息的行数和错误的token
+    fprintf(stderr, "[%s] encountered at line %d.\nUnexpected character: %s\n",msg, yylineno, removeNewline(yytext)); // 输出错误信息的行数和错误的token
     return 0;
 }
 // Linux 下注释掉这个函数
