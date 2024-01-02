@@ -24,7 +24,6 @@ false_comment [/][*].*
 %%
 
 [ \t\r\a]+     ; // 空白字符
-[\n]         return LF; // 换行符
 and          return AND;
 array        return ARR;
 begin        return BEG;

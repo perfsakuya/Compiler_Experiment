@@ -17,7 +17,7 @@ extern int yylex();
 %}
 
 /* 声明 token 供后续使用, 同时也可以在 lex 中使用 */
-%token LF AND ARR BEG BOOL CALL CASE CHR CONST DIM DO ELSE END BOOLFALSE FOR IF INPUT INT NOT OF OR OUTPUT PROCEDURE PROGRAM READ REAL REPEAT SET STOP THEN TO BOOLTRUE UNTIL VAR WHILE WRITE RELOP
+%token AND ARR BEG BOOL CALL CASE CHR CONST DIM DO ELSE END BOOLFALSE FOR IF INPUT INT NOT OF OR OUTPUT PROCEDURE PROGRAM READ REAL REPEAT SET STOP THEN TO BOOLTRUE UNTIL VAR WHILE WRITE RELOP
 %token LB RB RCOMMENT LCOMMENT COMMA DOT TDOT COLON ASSIGN SEMI LT LE NE EQ RT RE LC RC
 %token INTEGER id TRUECHAR FALSECHAR TRUECOMMENT FALSECOMMENT ILLEGALCHR
 
@@ -55,13 +55,13 @@ extern int yylex();
 
 // ---------------------------1 程序定义--------------------------------------
 // 1.1 <程序> → program <标识符> ; | program
-program:    PROGRAM program_name SEMI LF program
+program:    PROGRAM program_name SEMI program
         
             | VAR var_definition program
             {
                 printf("[info] Variable Declaration: of type integer.\n"); // 只作提示，以后要删除
             }
-            | BEG LF statement
+            | BEG statement
             {
                 printf("[info] BEGIN\n"); // 只作提示，以后要删除
             }
@@ -74,9 +74,8 @@ program_name: id {
 var_definition : id COMMA var_definition
                 | id COLON INT SEMI var_definition
                 {
-                    printf("[info] FINISH VAR\n"); // 只作提示，以后要删除
+                    // printf("[info] FINISH VAR\n"); // 只作提示，以后要删除
                 }
-                | LF
                 | {}
                 ;
 // --------------------------------------------------------------------------
@@ -91,14 +90,13 @@ statement : IF expression THEN M statement
                 $$.nextlist = merge($2.falselist, $5.nextlist); 
             }
 
-            |IF expression THEN M statement ELSE LF N M statement
+            |IF expression THEN M statement ELSE N M statement
             {
                 backpatch(list, $2.truelist, $4.instr);    
-                backpatch(list, $2.falselist, $9.instr);
-                $5.nextlist = merge($5.nextlist, $8.nextlist);    
-                $$.nextlist = merge($5.nextlist, $10.nextlist);
+                backpatch(list, $2.falselist, $8.instr);
+                $5.nextlist = merge($5.nextlist, $7.nextlist);    
+                $$.nextlist = merge($5.nextlist, $9.nextlist);
             }
-
             |WHILE M expression DO M statement
             {
                 backpatch(list, $6.nextlist, $2.instr);    
@@ -124,11 +122,7 @@ statement : IF expression THEN M statement
             {
                 $$.nextlist = $1.nextlist;
             }
-            |LF statement 
-            {
-                $$.nextlist = $2.nextlist;
-            }
-            |END DOT LF
+            |END DOT
             {
                 // 差一个回填backpatch即可完成
                 printf("[info] FINISH PROGRAM\n"); // 只作提示，以后要删除
@@ -252,7 +246,7 @@ int main() {
     // 这里改了一下，直接在cmd里面输出，方便调试，以后可以改回来
     // freopen("test_program.txt", "rt+", stdin);
     // freopen("test_out.txt", "wt+", stdout);
-    
+
     extern FILE *yyin;
     yyin = stdin;
     yyparse();
