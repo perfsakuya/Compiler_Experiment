@@ -228,10 +228,7 @@ int print(codelist* dst)
     int i;
 
     for (i = 1; i < dst->linecnt; i++)
-    {
-        if(dst->code[i]=="(j, -, - ,") printf("(%d)   (j, -, - , %d)\n", i, dst->linecnt);
         printf("(%d)   %s\n", i, dst->code[i]);
-    }
     printf("(%d)   %s\n", i, "(sys, -, -, -)");
     return 0;
 }
