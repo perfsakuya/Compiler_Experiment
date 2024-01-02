@@ -83,7 +83,7 @@ var_definition : id COMMA var_definition
 // ---------------------------2 语句定义--------------------------------------
 // 2.0 <语句> → <赋值句>│<if句>│<while句>│<repeat句>│<复合句>
 // <<<这里的各种_statement都不需要识别换行符LF和分号SEMI>>>
-statement : IF expression THEN M statement %prec WITHOUT_ELSE
+statement : IF expression THEN M statement 
             {
                 backpatch(list, $2.truelist, $4.instr);
                 $$.nextlist = merge($2.falselist, $5.nextlist); 
@@ -126,11 +126,11 @@ statement : IF expression THEN M statement %prec WITHOUT_ELSE
             {
                 $$.nextlist = $2.nextlist;
             }
-            |END DOT LF
+            |END DOT statement
             {
-                //差一个回填backpatch即可完成
+                // 差一个回填backpatch即可完成
                 printf("[info] FINISH PROGRAM\n"); // 只作提示，以后要删除
-                YYACCEPT; // 结束
+                // YYACCEPT; // 结束
             }
             |{}
             ;
