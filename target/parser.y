@@ -1,5 +1,5 @@
 %{
-/* 包含所需头文件 */
+/* ???????????? */
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -8,7 +8,7 @@
 codelist* list;
 
 char* prog_name;
-// int quad_ruple_count = 0; // 地址计数
+// int quad_ruple_count = 0; // ???????
 extern int yylineno;
 extern char* yytext;
 extern int yylex();    
@@ -16,13 +16,13 @@ extern int yylex();
 // int yyerror(char* msg);
 %}
 
-/* 声明 token 供后续使用, 同时也可以在 lex 中使用 */
+/* ???? token ?????????, ????????? lex ????? */
 %token AND ARR BEG BOOL CALL CASE CHR CONST DIM DO ELSE END BOOLFALSE FOR IF INPUT INT NOT OF OR OUTPUT PROCEDURE PROGRAM READ REAL REPEAT SET STOP THEN TO BOOLTRUE UNTIL VAR WHILE WRITE RELOP
 %token LB RB RCOMMENT LCOMMENT COMMA DOT TDOT COLON ASSIGN SEMI LT LE NE EQ RT RE LC RC
 %token INTEGER id TRUECHAR FALSECHAR TRUECOMMENT FALSECOMMENT ILLEGALCHR
 
-/* %left 表示左结合, %right 表示右结合 */
-/* 最后列出的定义具有最高的优先级 */
+/* %left ???????, %right ??????? */
+/* ????г?????????????????? */
 %left ADD SUB
 %left MUL DIV 
 
@@ -36,34 +36,34 @@ extern int yylex();
 %nonassoc WITHOUT_ELSE
 
 
-/* 定义结构体, 使得 token 可以附带相应的数据信息(语义值) */
-// 暂时不需要
+/* ???????, ??? token ???????????????????(?????) */
+// ????????
 // %union {
 //     int num;
 //     char *str;
 //     int boolvalue; // 0==false, 1==true
 // }
 
-/* 指明不同 token 或者 规则 的数据类型 */
+/* ?????? token ???? ???? ?????????? */
 // %type <num> INTEGER assignment_statement meta_assignment 
 // %type <str> program_name id variable_list calc_expression var_definition 
 // %type <boolvalue> bool_expression
-/* 根据规定，YACC仅对第一条规则感兴趣, 或者使用 %start 符号指定的起始规则 */
+/* ????涨??YACC????????????????, ??????? %start ???????????????? */
 %start program
 
 %%
 
-// ---------------------------1 程序定义--------------------------------------
-// 1.1 <程序> → program <标识符> ; | program
+// ---------------------------1 ??????--------------------------------------
+// 1.1 <????> ?? program <?????> ; | program
 program:    PROGRAM program_name SEMI program
         
             | VAR var_definition program
             {
-                printf("[info] Variable Declaration: of type integer.\n"); // 只作提示，以后要删除
+                printf("[info] Variable Declaration: of type integer.\n"); // ???????????????
             }
             | BEG statement
             {
-                printf("[info] BEGIN\n"); // 只作提示，以后要删除
+                printf("[info] BEGIN\n"); // ???????????????
             }
             ;
 
@@ -74,15 +74,15 @@ program_name: id {
 var_definition : id COMMA var_definition
                 | id COLON INT SEMI var_definition
                 {
-                    // printf("[info] FINISH VAR\n"); // 只作提示，以后要删除
+                    // printf("[info] FINISH VAR\n"); // ???????????????
                 }
                 | {}
                 ;
 // --------------------------------------------------------------------------
 
 
-// ---------------------------2 语句定义--------------------------------------
-// <语句> → <赋值句>│<if句>│<while句>│<repeat句>│<复合句>
+// ---------------------------2 ?????--------------------------------------
+// <???> ?? <?????>??<if??>??<while??>??<repeat??>??<?????>
 statement : IF expression THEN M statement 
             {
                 backpatch(list, $3.truelist, $$.instr);
@@ -121,11 +121,6 @@ statement : IF expression THEN M statement
             {
                 $$.nextlist = $1.nextlist;
             }
-            |END DOT
-            {
-                printf("[info] ANALYZE SUCCESSFUL.\n"); // 只作提示，以后要删除
-                YYACCEPT; // 结束
-            }
             |{}
             ;
 
@@ -134,14 +129,20 @@ L   :   L SEMI M statement
             backpatch(list, $1.nextlist, $3.instr);
             $$.nextlist = $4.nextlist;
         }
+        |L END DOT M
+        {
+            backpatch(list,$1.nextlist,$4.instr);
+            printf("[info] FINISH PROGRAM\n"); // 只作提示，以后要删除
+            YYACCEPT; // 结束
+        }
         |statement
         {
             $$.nextlist = $1.nextlist;
         }
         ;
-// 改成expression形式 分为布尔 AND OR NOT RELOP 与calc_expression
+// ???expression??? ??????? AND OR NOT RELOP ??calc_expression
 
-// RELOP 为各种表达
+// RELOP ????????
 // "<"|"<="|">"|">="|"!="|"="    { filloperator(&yylval, yytext); return( RELOP ); }
 expression   :   expression AND M expression    
         {   
@@ -174,7 +175,7 @@ expression   :   expression AND M expression
             copyaddr_fromnode(&$$, $1);
         }
         ;
-// 一些辅助符号
+// ?Щ????????
 
 calc_expression :   INTEGER 
                 {
@@ -238,23 +239,23 @@ char* removeNewline(char *str) {
 }
 
 int main() {
-    // 非常cool的标题
+    // ???cool?????
     printf("\033[35m   _____ ______  _______  __    ______     ___    _   _____    ____  _______   __________ \n");
     printf("  / ___//  _/  |/  / __ \\/ /   / ____/    /   |  / | / /   |  / /\\ \\/ /__  /  / ____/ __ \\ \n");
     printf("  \\__ \\ / // /|_/ / /_/ / /   / __/      / /| | /  |/ / /| | / /  \\  /  / /  / __/ / /_/ /\n");
     printf(" ___/ // // /  / / ____/ /___/ /___     / ___ |/ /|  / ___ |/ /___/ /  / /__/ /___/ _, _/ \n");
     printf("/____/___/_/  /_/_/   /_____/_____/    /_/  |_/_/ |_/_/  |_/_____/_/  /____/_____/_/ |_|  v0.1.0\n");
     printf("------------------------------------------------------------------------------------------------\033[0m\n");
-    printf("┌───────────────────────┐\n");
-    printf("│ANALYZER MADE BY:      │\n");
-    printf("│汤骏哲     202230444429│\n");
-    printf("│黄泽川     202230441183│\n");
-    printf("│马思捷     202230140314│\n");
-    printf("└───────────────────────┘\n");
+    printf("??????????????????????????????????????????????????\n");
+    printf("??ANALYZER MADE BY:      ??\n");
+    printf("????????     202230444429??\n");
+    printf("??????     202230441183??\n");
+    printf("???????     202230140314??\n");
+    printf("??????????????????????????????????????????????????\n");
     printf("Text your program name here:\n");
     list = newcodelist();
 
-    // 这里改了一下，直接在cmd里面输出，方便调试，以后可以改回来
+    // ????????????????cmd???????????????????????????
     // freopen("test_program.txt", "rt+", stdin);
     // freopen("test_out.txt", "wt+", stdout);
 
@@ -268,12 +269,12 @@ int main() {
     return 0;
 }
 
-// Linux 下注释掉这个函数
+// Linux ?????????????
 int yyerror(char *msg) {
-    fprintf(stderr, "[%s] encountered at line %d.\nUnexpected character: %s\n",msg, yylineno, removeNewline(yytext)); // 输出错误信息的行数和错误的token
+    fprintf(stderr, "[%s] encountered at line %d.\nUnexpected character: %s\n",msg, yylineno, removeNewline(yytext)); // ??????????????????????token
     return 0;
 }
-// Linux 下注释掉这个函数
+// Linux ?????????????
 int yywrap(){
     return 1;
 }
