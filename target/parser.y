@@ -186,24 +186,24 @@ calc_expression :   INTEGER
                 |calc_expression ADD calc_expression 
                 {
                     new_temp(&$$, get_temp_index(list));
-                    gen_3addr(list, $$, $1, "+", $3);
+                    gen_3addr(list, $$, $1, " +", $3);
                 }
 
                 |calc_expression SUB calc_expression 
                 {
                     new_temp(&$$, get_temp_index(list));
-                    gen_3addr(list, $$, $1, "-", $3);
+                    gen_3addr(list, $$, $1, " -", $3);
                 }
                 |calc_expression MUL calc_expression 
                 {
                     new_temp(&$$, get_temp_index(list)); 
-                    gen_3addr(list, $$, $1, "*", $3);
+                    gen_3addr(list, $$, $1, " *", $3);
                 }
 
                 |calc_expression DIV calc_expression 
                 {
                     new_temp(&$$, get_temp_index(list)); 
-                    gen_3addr(list, $$, $1, "/", $3);
+                    gen_3addr(list, $$, $1, " /", $3);
                 }
                 |id 
                 {
