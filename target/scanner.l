@@ -9,6 +9,7 @@
 %option yylineno
 letter      [A-Za-z]
 digit       [0-9]
+ws	[delim]+
  // <标识符> → <字母>│<标识符> <数字>│<标识符> <字母>
 identifier {letter}({letter}|{digit})*
  // identifier ({letter}|_){letter}({letter}|{digit}|_)* // 貌似会产生奇怪的bug
@@ -23,7 +24,8 @@ comment [/][*].*[*][/]
 false_comment [/][*].*
 %%
 
-[ \t\r\a]+     ; // 空白字符
+[ \t\r\a]+   ; // 空白字符
+[\n]         ; // 换行符
 and          return AND;
 array        return ARR;
 begin        return BEG;
@@ -77,7 +79,7 @@ write        return WRITE;
 "["          return LC;
 "]"          return RC;
 
-
+{ws}    { }
 {identifier} {  // 标识符
 
     // yylval.str = strdup(yytext); // 弃用

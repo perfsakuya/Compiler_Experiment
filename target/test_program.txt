@@ -1,17 +1,72 @@
-program example4;
-    var  A,B,C,D:integer;
+program example1;
+var X, Y, Z, M: integer;
 begin
-  A:=1; B:=5; C:=3; D:=4;
-  while A<C and B>D do
-      if A=1 then C:=C+1 else
-          while A<=D do A:=A*2
+    X := 2; Y := 6; Z := 4; M := 3;
+    while X < Z and Y > M do
+        if X = 2 then Z := Z + 1
+        else
+            while X <= M do
+                X := X * 2
 end.
 
+program example2;
+var P, Q, R, S, T: integer;
+begin
+    P := 3; Q := 7; R := 2; S := 5; T := 1;
+    repeat
+        if P < Q then
+            while R >= S do
+                if T = 1 then
+                    R := R * 2
+        else
+            while P <= S do
+                P := P + Q
+    until Q > T
+end.
+
+program example3;
+var X, Y, Z, M, N: integer;
+begin
+    X := 2; Y := 6; Z := 4; M := 3; N := 1;
+    if N >= 1 then
+        X := Y * Z + Y / M
+    else
+        repeat
+            X := X + 1
+        until X < 0
+end.
+
+program example4;
+var A,B,C,D:integer;
+begin
+    A:=1;B:=5;C:=3;D:=4;
+    while A<C and B>D do
+        if A=1 then C:= C+1 else
+        while A<=D do A:= A*2
+end.
 
 program example5;
-var  A,B,C,D,W:integer;
+var A,B,C,D,W:integer;
 begin
-    A:=5; B:=4; C:=3; D:=2; W:=1;
-    if W>=1 then A:=B*C+B/D 
-	else repeat A:=A+1 until A<0
+    A:= 1; B:= 5; C:= 3; D:= 4; W:=1;
+    if W>=1 then A:=B*C+B/D
+    else repeat A:=A+1 until A<0
+end.
+
+program example6;
+var A, B, C, D, W: integer;
+begin
+A := 3; B := 6; C := 2; D := 4; W := 1;
+if W > 1 then
+        repeat C := C + 1 until C > D
+else while A < D do
+     repeat A := A + 1 until A < 0
+end.
+
+program example7;
+var  A,B,C,D:integer;
+begin
+	A:=5; B:=4; C:=3; D:=2;
+	if A<B+C or C<D and not A/B>D or B<C+D 
+	then A:=A*2
 end.

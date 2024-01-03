@@ -59,11 +59,11 @@ program:    PROGRAM program_name SEMI program
         
             | VAR var_definition program
             {
-                printf("[info] Variable Declaration: of type integer.\n"); // 只作提示，以后要删除
+                // printf("[info] Variable Declaration: of type integer.\n"); // 只作提示，以后要删除
             }
             | BEG statement
             {
-                printf("[info] BEGIN\n"); // 只作提示，以后要删除
+                // printf("[info] BEGIN\n"); // 只作提示，以后要删除
             }
             ;
 
@@ -85,7 +85,7 @@ var_definition : id COMMA var_definition
 // <语句> → <赋值句>│<if句>│<while句>│<repeat句>│<复合句>
 statement : IF expression THEN M statement 
             {
-                backpatch(list, $3.truelist, $$.instr);
+                backpatch(list, $2.truelist, $4.instr);
                 $$.nextlist = merge($2.falselist, $5.nextlist); 
             }
 
@@ -132,7 +132,7 @@ L   :   L SEMI M statement
         |L END DOT M
         {
             backpatch(list,$1.nextlist,$4.instr);
-            printf("[info] FINISH PROGRAM\n"); // 只作提示，以后要删除
+            // printf("[info] FINISH PROGRAM\n"); // 只作提示，以后要删除
             YYACCEPT; // 结束
         }
         |statement
@@ -244,8 +244,8 @@ int main() {
     printf("  / ___//  _/  |/  / __ \\/ /   / ____/    /   |  / | / /   |  / /\\ \\/ /__  /  / ____/ __ \\ \n");
     printf("  \\__ \\ / // /|_/ / /_/ / /   / __/      / /| | /  |/ / /| | / /  \\  /  / /  / __/ / /_/ /\n");
     printf(" ___/ // // /  / / ____/ /___/ /___     / ___ |/ /|  / ___ |/ /___/ /  / /__/ /___/ _, _/ \n");
-    printf("/____/___/_/  /_/_/   /_____/_____/    /_/  |_/_/ |_/_/  |_/_____/_/  /____/_____/_/ |_|  v0.1.0\n");
-    printf("------------------------------------------------------------------------------------------------\033[0m\n");
+    printf("/____/___/_/  /_/_/   /_____/_____/    /_/  |_/_/ |_/_/  |_/_____/_/  /____/_____/_/ |_|  v1.0.0\n");
+    printf("────────────────────────────────────────────────────────────────────────────────────────────────\033[0m\n");
     printf("┌───────────────────────┐\n");
     printf("│ANALYZER MADE BY:      │\n");
     printf("│汤骏哲     202230444429│\n");
@@ -253,19 +253,26 @@ int main() {
     printf("│马思捷     202230140314│\n");
     printf("└───────────────────────┘\n");
     printf("Text your program name here:\n");
+
+    char input_name[100];
+    extern FILE *yyin;
     list = newcodelist();
 
-    // 这里改了一下，直接在cmd里面输出，方便调试，以后可以改回来
-    // freopen("test_program.txt", "rt+", stdin);
-    // freopen("test_out.txt", "wt+", stdout);
+    // 读取源文件
+    if (scanf("%99s", input_name) != 1) {
+        fprintf(stderr, "Process terminated.\n");
+        return 1;  // ctrl+c关闭了程序
+    }
+    FILE* input_file = freopen(input_name, "rt+", stdin);
+        if (input_file == NULL) {
+        fprintf(stderr, "No such file: %s\n", input_name);
+        return 2;  // 输入了不存在的文件名
+    }
 
-    extern FILE *yyin;
-    yyin = stdin;
+    // 分析开始
+    // 有bug，多了很多空行
     yyparse();
     print(list, prog_name);
-
-    fclose(stdin);
-    fclose(stdout);
     return 0;
 }
 
