@@ -1,5 +1,5 @@
 %{
-/* åŒ…å«æ‰€éœ€å¤´æ–‡ä»¶ */
+/* °üº¬ËùĞèÍ·ÎÄ¼ş */
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -8,7 +8,7 @@
 codelist* list;
 
 char* prog_name;
-// int quad_ruple_count = 0; // åœ°å€è®¡æ•°
+// int quad_ruple_count = 0; // µØÖ·¼ÆÊı
 extern int yylineno;
 extern char* yytext;
 extern int yylex();    
@@ -16,13 +16,13 @@ extern int yylex();
 // int yyerror(char* msg);
 %}
 
-/* å£°æ˜ token ä¾›åç»­ä½¿ç”¨, åŒæ—¶ä¹Ÿå¯ä»¥åœ¨ lex ä¸­ä½¿ç”¨ */
+/* ÉùÃ÷ token ¹©ºóĞøÊ¹ÓÃ, Í¬Ê±Ò²¿ÉÒÔÔÚ lex ÖĞÊ¹ÓÃ */
 %token AND ARR BEG BOOL CALL CASE CHR CONST DIM DO ELSE END BOOLFALSE FOR IF INPUT INT NOT OF OR OUTPUT PROCEDURE PROGRAM READ REAL REPEAT SET STOP THEN TO BOOLTRUE UNTIL VAR WHILE WRITE RELOP
 %token LB RB RCOMMENT LCOMMENT COMMA DOT TDOT COLON ASSIGN SEMI LT LE NE EQ RT RE LC RC
 %token INTEGER id TRUECHAR FALSECHAR TRUECOMMENT FALSECOMMENT ILLEGALCHR
 
-/* %left è¡¨ç¤ºå·¦ç»“åˆ, %right è¡¨ç¤ºå³ç»“åˆ */
-/* æœ€ååˆ—å‡ºçš„å®šä¹‰å…·æœ‰æœ€é«˜çš„ä¼˜å…ˆçº§ */
+/* %left ±íÊ¾×ó½áºÏ, %right ±íÊ¾ÓÒ½áºÏ */
+/* ×îºóÁĞ³öµÄ¶¨Òå¾ßÓĞ×î¸ßµÄÓÅÏÈ¼¶ */
 %left ADD SUB
 %left MUL DIV 
 
@@ -36,34 +36,34 @@ extern int yylex();
 %nonassoc WITHOUT_ELSE
 
 
-/* å®šä¹‰ç»“æ„ä½“, ä½¿å¾— token å¯ä»¥é™„å¸¦ç›¸åº”çš„æ•°æ®ä¿¡æ¯(è¯­ä¹‰å€¼) */
-// æš‚æ—¶ä¸éœ€è¦
+/* ¶¨Òå½á¹¹Ìå, Ê¹µÃ token ¿ÉÒÔ¸½´øÏàÓ¦µÄÊı¾İĞÅÏ¢(ÓïÒåÖµ) */
+// ÔİÊ±²»ĞèÒª
 // %union {
 //     int num;
 //     char *str;
 //     int boolvalue; // 0==false, 1==true
 // }
 
-/* æŒ‡æ˜ä¸åŒ token æˆ–è€… è§„åˆ™ çš„æ•°æ®ç±»å‹ */
+/* Ö¸Ã÷²»Í¬ token »òÕß ¹æÔò µÄÊı¾İÀàĞÍ */
 // %type <num> INTEGER assignment_statement meta_assignment 
 // %type <str> program_name id variable_list calc_expression var_definition 
 // %type <boolvalue> bool_expression
-/* æ ¹æ®è§„å®šï¼ŒYACCä»…å¯¹ç¬¬ä¸€æ¡è§„åˆ™æ„Ÿå…´è¶£, æˆ–è€…ä½¿ç”¨ %start ç¬¦å·æŒ‡å®šçš„èµ·å§‹è§„åˆ™ */
+/* ¸ù¾İ¹æ¶¨£¬YACC½ö¶ÔµÚÒ»Ìõ¹æÔò¸ĞĞËÈ¤, »òÕßÊ¹ÓÃ %start ·ûºÅÖ¸¶¨µÄÆğÊ¼¹æÔò */
 %start program
 
 %%
 
-// ---------------------------1 ç¨‹åºå®šä¹‰--------------------------------------
-// 1.1 <ç¨‹åº> â†’ program <æ ‡è¯†ç¬¦> ; | program
+// ---------------------------1 ³ÌĞò¶¨Òå--------------------------------------
+// 1.1 <³ÌĞò> ¡ú program <±êÊ¶·û> ; | program
 program:    PROGRAM program_name SEMI program
         
             | VAR var_definition program
             {
-                printf("[info] Variable Declaration: of type integer.\n"); // åªä½œæç¤ºï¼Œä»¥åè¦åˆ é™¤
+                printf("[info] Variable Declaration: of type integer.\n"); // Ö»×÷ÌáÊ¾£¬ÒÔºóÒªÉ¾³ı
             }
             | BEG statement
             {
-                printf("[info] BEGIN\n"); // åªä½œæç¤ºï¼Œä»¥åè¦åˆ é™¤
+                printf("[info] BEGIN\n"); // Ö»×÷ÌáÊ¾£¬ÒÔºóÒªÉ¾³ı
             }
             ;
 
@@ -74,15 +74,15 @@ program_name: id {
 var_definition : id COMMA var_definition
                 | id COLON INT SEMI var_definition
                 {
-                    // printf("[info] FINISH VAR\n"); // åªä½œæç¤ºï¼Œä»¥åè¦åˆ é™¤
+                    // printf("[info] FINISH VAR\n"); // Ö»×÷ÌáÊ¾£¬ÒÔºóÒªÉ¾³ı
                 }
                 | {}
                 ;
 // --------------------------------------------------------------------------
 
 
-// ---------------------------2 è¯­å¥å®šä¹‰--------------------------------------
-// <è¯­å¥> â†’ <èµ‹å€¼å¥>â”‚<ifå¥>â”‚<whileå¥>â”‚<repeatå¥>â”‚<å¤åˆå¥>
+// ---------------------------2 Óï¾ä¶¨Òå--------------------------------------
+// <Óï¾ä> ¡ú <¸³Öµ¾ä>©¦<if¾ä>©¦<while¾ä>©¦<repeat¾ä>©¦<¸´ºÏ¾ä>
 statement : IF expression THEN M statement 
             {
                 backpatch(list, $3.truelist, $$.instr);
@@ -123,8 +123,8 @@ statement : IF expression THEN M statement
             }
             |END DOT
             {
-                printf("[info] FINISH PROGRAM\n"); // åªä½œæç¤ºï¼Œä»¥åè¦åˆ é™¤
-                YYACCEPT; // ç»“æŸ
+                printf("[info] ANALYZE SUCCESSFUL.\n"); // Ö»×÷ÌáÊ¾£¬ÒÔºóÒªÉ¾³ı
+                YYACCEPT; // ½áÊø
             }
             |{}
             ;
@@ -139,9 +139,9 @@ L   :   L SEMI M statement
             $$.nextlist = $1.nextlist;
         }
         ;
-// æ”¹æˆexpressionå½¢å¼ åˆ†ä¸ºå¸ƒå°” AND OR NOT RELOP ä¸calc_expression
+// ¸Ä³ÉexpressionĞÎÊ½ ·ÖÎª²¼¶û AND OR NOT RELOP Óëcalc_expression
 
-// RELOP ä¸ºå„ç§è¡¨è¾¾
+// RELOP Îª¸÷ÖÖ±í´ï
 // "<"|"<="|">"|">="|"!="|"="    { filloperator(&yylval, yytext); return( RELOP ); }
 expression   :   expression AND M expression    
         {   
@@ -174,7 +174,7 @@ expression   :   expression AND M expression
             copyaddr_fromnode(&$$, $1);
         }
         ;
-// ä¸€äº›è¾…åŠ©ç¬¦å·
+// Ò»Ğ©¸¨Öú·ûºÅ
 
 calc_expression :   INTEGER 
                 {
@@ -238,9 +238,23 @@ char* removeNewline(char *str) {
 }
 
 int main() {
+    // ·Ç³£coolµÄ±êÌâ
+    printf("\033[35m   _____ ______  _______  __    ______     ___    _   _____    ____  _______   __________ \n");
+    printf("  / ___//  _/  |/  / __ \\/ /   / ____/    /   |  / | / /   |  / /\\ \\/ /__  /  / ____/ __ \\ \n");
+    printf("  \\__ \\ / // /|_/ / /_/ / /   / __/      / /| | /  |/ / /| | / /  \\  /  / /  / __/ / /_/ /\n");
+    printf(" ___/ // // /  / / ____/ /___/ /___     / ___ |/ /|  / ___ |/ /___/ /  / /__/ /___/ _, _/ \n");
+    printf("/____/___/_/  /_/_/   /_____/_____/    /_/  |_/_/ |_/_/  |_/_____/_/  /____/_____/_/ |_|  v0.1.0\n");
+    printf("------------------------------------------------------------------------------------------------\033[0m\n");
+    printf("©°©¤©¤©¤©¤©¤©¤©¤©¤©¤©¤©¤©¤©¤©¤©¤©¤©¤©¤©¤©¤©¤©¤©¤©´\n");
+    printf("©¦ANALYZER MADE BY:      ©¦\n");
+    printf("©¦ÌÀ¿¥ÕÜ     202230444429©¦\n");
+    printf("©¦»ÆÔó´¨     202230441183©¦\n");
+    printf("©¦ÂíË¼½İ     202230140314©¦\n");
+    printf("©¸©¤©¤©¤©¤©¤©¤©¤©¤©¤©¤©¤©¤©¤©¤©¤©¤©¤©¤©¤©¤©¤©¤©¤©¼\n");
+    printf("Text your program name here:\n");
     list = newcodelist();
 
-    // è¿™é‡Œæ”¹äº†ä¸€ä¸‹ï¼Œç›´æ¥åœ¨cmdé‡Œé¢è¾“å‡ºï¼Œæ–¹ä¾¿è°ƒè¯•ï¼Œä»¥åå¯ä»¥æ”¹å›æ¥
+    // ÕâÀï¸ÄÁËÒ»ÏÂ£¬Ö±½ÓÔÚcmdÀïÃæÊä³ö£¬·½±ãµ÷ÊÔ£¬ÒÔºó¿ÉÒÔ¸Ä»ØÀ´
     // freopen("test_program.txt", "rt+", stdin);
     // freopen("test_out.txt", "wt+", stdout);
 
@@ -254,12 +268,12 @@ int main() {
     return 0;
 }
 
-// Linux ä¸‹æ³¨é‡Šæ‰è¿™ä¸ªå‡½æ•°
+// Linux ÏÂ×¢ÊÍµôÕâ¸öº¯Êı
 int yyerror(char *msg) {
-    fprintf(stderr, "[%s] encountered at line %d.\nUnexpected character: %s\n",msg, yylineno, removeNewline(yytext)); // è¾“å‡ºé”™è¯¯ä¿¡æ¯çš„è¡Œæ•°å’Œé”™è¯¯çš„token
+    fprintf(stderr, "[%s] encountered at line %d.\nUnexpected character: %s\n",msg, yylineno, removeNewline(yytext)); // Êä³ö´íÎóĞÅÏ¢µÄĞĞÊıºÍ´íÎóµÄtoken
     return 0;
 }
-// Linux ä¸‹æ³¨é‡Šæ‰è¿™ä¸ªå‡½æ•°
+// Linux ÏÂ×¢ÊÍµôÕâ¸öº¯Êı
 int yywrap(){
     return 1;
 }
