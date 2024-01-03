@@ -129,11 +129,11 @@ L   :   L SEMI M statement
             backpatch(list, $1.nextlist, $3.instr);
             $$.nextlist = $4.nextlist;
         }
-        |L END DOT M statement
+        |L END DOT M
         {
             backpatch(list,$1.nextlist,$4.instr);
-            $$.nextlist = $5.nextlist;
             printf("[info] FINISH PROGRAM\n"); // 只作提示，以后要删除
+            YYACCEPT; // 结束
         }
         |statement
         {
