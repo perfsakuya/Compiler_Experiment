@@ -21,7 +21,6 @@ listele* new_listele(int no)
     return p;
 }
 
-
 typedef struct instrlist
 //instruction list 指令列表
 {

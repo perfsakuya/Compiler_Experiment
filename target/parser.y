@@ -7,7 +7,8 @@
 #define YYSTYPE node
 codelist* list;
 
-int quad_ruple_count = 0; // 地址计数
+char* prog_name;
+// int quad_ruple_count = 0; // 地址计数
 extern int yylineno;
 extern char* yytext;
 extern int yylex();    
@@ -16,7 +17,7 @@ extern int yylex();
 %}
 
 /* 声明 token 供后续使用, 同时也可以在 lex 中使用 */
-%token LF AND ARR BEG BOOL CALL CASE CHR CONST DIM DO ELSE END BOOLFALSE FOR IF INPUT INT NOT OF OR OUTPUT PROCEDURE PROGRAM READ REAL REPEAT SET STOP THEN TO BOOLTRUE UNTIL VAR WHILE WRITE RELOP
+%token AND ARR BEG BOOL CALL CASE CHR CONST DIM DO ELSE END BOOLFALSE FOR IF INPUT INT NOT OF OR OUTPUT PROCEDURE PROGRAM READ REAL REPEAT SET STOP THEN TO BOOLTRUE UNTIL VAR WHILE WRITE RELOP
 %token LB RB RCOMMENT LCOMMENT COMMA DOT TDOT COLON ASSIGN SEMI LT LE NE EQ RT RE LC RC
 %token INTEGER id TRUECHAR FALSECHAR TRUECOMMENT FALSECOMMENT ILLEGALCHR
 
@@ -54,49 +55,47 @@ extern int yylex();
 
 // ---------------------------1 程序定义--------------------------------------
 // 1.1 <程序> → program <标识符> ; | program
-program:    PROGRAM program_name SEMI LF program
+program:    PROGRAM program_name SEMI program
         
             | VAR var_definition program
             {
                 printf("[info] Variable Declaration: of type integer.\n"); // 只作提示，以后要删除
             }
-            | BEG LF statement
+            | BEG statement
             {
                 printf("[info] BEGIN\n"); // 只作提示，以后要删除
             }
             ;
 
 program_name: id {
-    printf("(%d) (program,%s,-,-)\n", quad_ruple_count, $1.lexeme);
+    prog_name = $1.lexeme;
+    // printf("(%d) (program,%s,-,-)\n", quad_ruple_count, $1.lexeme);
 };
 var_definition : id COMMA var_definition
                 | id COLON INT SEMI var_definition
                 {
-                    printf("[info] FINISHI VAR\n"); // 只作提示，以后要删除
+                    // printf("[info] FINISH VAR\n"); // 只作提示，以后要删除
                 }
-                | LF
                 | {}
                 ;
 // --------------------------------------------------------------------------
 
 
 // ---------------------------2 语句定义--------------------------------------
-// 2.0 <语句> → <赋值句>│<if句>│<while句>│<repeat句>│<复合句>
-// <<<这里的各种_statement都不需要识别换行符LF和分号SEMI>>>
-statement : IF expression THEN M statement
+// <语句> → <赋值句>│<if句>│<while句>│<repeat句>│<复合句>
+statement : IF expression THEN M statement 
             {
-                backpatch(list, $2.truelist, $4.instr);
+                backpatch(list, $3.truelist, $$.instr);
                 $$.nextlist = merge($2.falselist, $5.nextlist); 
             }
 
-            |IF expression THEN M statement ELSE LF N M statement
+            |IF expression THEN M statement ELSE N M statement
             {
                 backpatch(list, $2.truelist, $4.instr);    
-                backpatch(list, $2.falselist, $9.instr);
-                $5.nextlist = merge($5.nextlist, $8.nextlist);    
-                $$.nextlist = merge($5.nextlist, $10.nextlist);
+                backpatch(list, $2.falselist, $8.instr);
+                $5.nextlist = merge($5.nextlist, $7.nextlist);    
+                $$.nextlist = merge($5.nextlist, $9.nextlist);
             }
-
             |WHILE M expression DO M statement
             {
                 backpatch(list, $6.nextlist, $2.instr);    
@@ -122,15 +121,6 @@ statement : IF expression THEN M statement
             {
                 $$.nextlist = $1.nextlist;
             }
-            |LF statement 
-            {
-                $$.nextlist = $2.nextlist;
-            }
-            |END DOT statement
-            {
-                //差一个回填backpatch即可完成
-                printf("[info] FINISHI PROGRAM\n"); // 只作提示，以后要删除
-            }
             |{}
             ;
 
@@ -139,15 +129,21 @@ L   :   L SEMI M statement
             backpatch(list, $1.nextlist, $3.instr);
             $$.nextlist = $4.nextlist;
         }
+        |L END DOT M statement
+        {
+            backpatch(list,$1.nextlist,$4.instr);
+            $$.nextlist = $5.nextlist;
+            printf("[info] FINISH PROGRAM\n"); // 只作提示，以后要删除
+        }
         |statement
         {
             $$.nextlist = $1.nextlist;
         }
         ;
-//改成expression形式 分为布尔 AND OR NOT RELOP 与calc_expression
+// 改成expression形式 分为布尔 AND OR NOT RELOP 与calc_expression
 
-//RELOP 为各种表达
-//"<"|"<="|">"|">="|"!="|"="    { filloperator(&yylval, yytext); return( RELOP ); }
+// RELOP 为各种表达
+// "<"|"<="|">"|">="|"!="|"="    { filloperator(&yylval, yytext); return( RELOP ); }
 expression   :   expression AND M expression    
         {   
             backpatch(list, $1.truelist, $3.instr);
@@ -179,9 +175,9 @@ expression   :   expression AND M expression
             copyaddr_fromnode(&$$, $1);
         }
         ;
-//一些辅助符号
+// 一些辅助符号
 
-calc_expression: INTEGER 
+calc_expression :   INTEGER 
                 {
                     copyaddr(&$$, $1.lexeme);
                 }
@@ -211,9 +207,8 @@ calc_expression: INTEGER
                 |id 
                 {
                     copyaddr(&$$, $1.lexeme);
-                };
-
-
+                }
+                ;
 M   :   { $$.instr = nextinstr(list); }
         ;
 
@@ -246,21 +241,23 @@ char* removeNewline(char *str) {
 int main() {
     list = newcodelist();
 
-    freopen("test.in", "rt+", stdin);
-    freopen("test.out", "wt+", stdout);
+    // 这里改了一下，直接在cmd里面输出，方便调试，以后可以改回来
+    // freopen("test_program.txt", "rt+", stdin);
+    // freopen("test_out.txt", "wt+", stdout);
 
+    extern FILE *yyin;
+    yyin = stdin;
     yyparse();
-    print(list);
-    
-    fclose(stdin);
+    print(list, prog_name);
 
+    fclose(stdin);
     fclose(stdout);
     return 0;
 }
 
 // Linux 下注释掉这个函数
 int yyerror(char *msg) {
-    fprintf(stderr, "[%s] encountered at line %d.\nUnexpected character is: %s\n",msg, yylineno, removeNewline(yytext)); // 输出错误信息的行数和错误的token
+    fprintf(stderr, "[%s] encountered at line %d.\nUnexpected character: %s\n",msg, yylineno, removeNewline(yytext)); // 输出错误信息的行数和错误的token
     return 0;
 }
 // Linux 下注释掉这个函数
