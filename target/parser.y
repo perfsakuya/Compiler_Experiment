@@ -121,11 +121,6 @@ statement : IF expression THEN M statement
             {
                 $$.nextlist = $1.nextlist;
             }
-            |END DOT
-            {
-                printf("[info] FINISH PROGRAM\n"); // 只作提示，以后要删除
-                YYACCEPT; // 结束
-            }
             |{}
             ;
 
@@ -133,6 +128,12 @@ L   :   L SEMI M statement
         {
             backpatch(list, $1.nextlist, $3.instr);
             $$.nextlist = $4.nextlist;
+        }
+        |L END DOT M
+        {
+            backpatch(list,$1.nextlist,$4.instr);
+            printf("[info] FINISH PROGRAM\n"); // 只作提示，以后要删除
+            YYACCEPT; // 结束
         }
         |statement
         {
