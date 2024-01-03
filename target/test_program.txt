@@ -4,5 +4,14 @@ begin
   A:=1; B:=5; C:=3; D:=4;
   while A<C and B>D do
       if A=1 then C:=C+1 else
-          while A<=D do A:=A*2
+while A<=D do A:=A*2;
+end.
+
+
+program example5;
+var  A,B,C,D,W:integer;
+begin
+    A:=5; B:=4; C:=3; D:=2; W:=1;
+    if W>=1 then A:=B*C+B/D 
+	else repeat A:=A+1 until A<0
 end.
