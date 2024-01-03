@@ -110,6 +110,7 @@ write        return WRITE;
 
 . {  //其他非法字符
     printf("Illegal character: %s\n",yytext);
+    yyerror(); // 语法分析错误，直接退出
     return ILLEGALCHR;
 }
 

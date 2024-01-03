@@ -235,7 +235,7 @@ int print(codelist *dst, char *prog_name)
             printf("(%d)   %s\n", i, dst->code[i]);
     }
     printf("(%d)   %s\n", i, "(sys, -, -, -)");
-    return 0;
+    return 1;
 }
 
 

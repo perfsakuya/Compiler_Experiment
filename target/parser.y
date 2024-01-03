@@ -12,6 +12,7 @@ char* prog_name;
 extern int yylineno;
 extern char* yytext;
 extern int yylex();    
+extern int iserror = 0;
 // int yyerror();
 // int yyerror(char* msg);
 %}
@@ -59,11 +60,11 @@ program:    PROGRAM program_name SEMI program
         
             | VAR var_definition program
             {
-                // printf("[info] Variable Declaration: of type integer.\n"); // 只作提示，以后要删除
+                // printf("\033[36m[info]\033[0m Variable Declaration: of type integer.\n"); // 只作提示，以后要删除
             }
             | BEG statement
             {
-                // printf("[info] BEGIN\n"); // 只作提示，以后要删除
+                // printf("\033[36m[info]\033[0m BEGIN\n"); // 只作提示，以后要删除
             }
             ;
 
@@ -74,7 +75,7 @@ program_name: id {
 var_definition : id COMMA var_definition
                 | id COLON INT SEMI var_definition
                 {
-                    // printf("[info] FINISH VAR\n"); // 只作提示，以后要删除
+                    // printf("\033[36m[info]\033[0m FINISH VAR\n"); // 只作提示，以后要删除
                 }
                 | {}
                 ;
@@ -132,7 +133,7 @@ L   :   L SEMI M statement
         |L END DOT M
         {
             backpatch(list,$1.nextlist,$4.instr);
-            // printf("[info] FINISH PROGRAM\n"); // 只作提示，以后要删除
+            // printf("\033[36m[info]\033[0m FINISH PROGRAM\n"); // 只作提示，以后要删除
             YYACCEPT; // 结束
         }
         |statement
@@ -246,13 +247,16 @@ int main() {
     printf(" ___/ // // /  / / ____/ /___/ /___     / ___ |/ /|  / ___ |/ /___/ /  / /__/ /___/ _, _/ \n");
     printf("/____/___/_/  /_/_/   /_____/_____/    /_/  |_/_/ |_/_/  |_/_____/_/  /____/_____/_/ |_|  v1.0.0\n");
     printf("────────────────────────────────────────────────────────────────────────────────────────────────\033[0m\n");
+    
+    // 制作人员公示
     printf("┌───────────────────────┐\n");
     printf("│ANALYZER MADE BY:      │\n");
     printf("│汤骏哲     202230444429│\n");
     printf("│黄泽川     202230441183│\n");
     printf("│马思捷     202230140314│\n");
     printf("└───────────────────────┘\n");
-    printf("Text your program name here:\n");
+
+    printf("\033[36m[info]\033[0m Text your program name here:\n");
 
     char input_name[100];
     extern FILE *yyin;
@@ -260,25 +264,34 @@ int main() {
 
     // 读取源文件
     if (scanf("%99s", input_name) != 1) {
-        fprintf(stderr, "Process terminated.\n");
+        fprintf(stderr, "\033[31m[error]\033[0m Process terminated.\n");
         return 1;  // ctrl+c关闭了程序
     }
     FILE* input_file = freopen(input_name, "rt+", stdin);
-        if (input_file == NULL) {
-        fprintf(stderr, "No such file: %s\n", input_name);
+    if (input_file == NULL) {
+        fprintf(stderr, "\033[31m[error]\033[0m No such file: %s\n", input_name);
         return 2;  // 输入了不存在的文件名
     }
 
     // 分析开始
+    printf("\033[36m[info]\033[0m START ANALYZING.\n");
+
     // 有bug，多了很多空行
     yyparse();
-    print(list, prog_name);
+    if(iserror == 1)
+        printf("\033[31m[error]\033[0m Process terminated.\n");
+    else {
+        print(list, prog_name);
+        printf("\033[32m[info]\033[0m ANALYZE SUCCESSFULLY.\n");
+    }
+
     return 0;
 }
 
 // Linux 下注释掉这个函数
 int yyerror(char *msg) {
-    fprintf(stderr, "[%s] encountered at line %d.\nUnexpected character: %s\n",msg, yylineno, removeNewline(yytext)); // 输出错误信息的行数和错误的token
+    fprintf(stderr, "\033[31m[%s]\033[0m at line %d. Unexpected character: %s\n",msg, yylineno, removeNewline(yytext)); // 输出错误信息的行数和错误的token
+    iserror = 1;
     return 0;
 }
 // Linux 下注释掉这个函数
