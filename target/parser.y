@@ -3,18 +3,15 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include "try.h"
+#include "header.h"
 #define YYSTYPE node
 codelist* list;
 
 char* prog_name;
-// int quad_ruple_count = 0; // 地址计数
 extern int yylineno;
 extern char* yytext;
 extern int yylex();    
 extern int iserror = 0;
-// int yyerror();
-// int yyerror(char* msg);
 %}
 
 /* 声明 token 供后续使用, 同时也可以在 lex 中使用 */

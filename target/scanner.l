@@ -3,13 +3,14 @@
 #include <stdlib.h>
 #include <string.h>
 #include "y.tab.h" // 由 yacc -d 生成
-// #define MAX_SIZE 100
-// int wordcount = 0;
+// #define MAX_SIZE 100 // 词法分析中使用
+// int wordcount = 0; // 词法分析中使用
 %}
 %option yylineno
 letter      [A-Za-z]
 digit       [0-9]
-ws	[delim]+
+ // 空格
+ws	[delim]+ 
  // <标识符> → <字母>│<标识符> <数字>│<标识符> <字母>
 identifier {letter}({letter}|{digit})*
  // identifier ({letter}|_){letter}({letter}|{digit}|_)* // 貌似会产生奇怪的bug
