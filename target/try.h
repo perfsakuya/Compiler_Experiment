@@ -147,7 +147,7 @@ char tmp[1024];
 int gen_goto_blank(codelist *dst)
 // geterate goto blank跳转中间代码 目标暂时为空
 {
-    sprintf(tmp, "(j, -, - ,");
+    sprintf(tmp, "(j, -, -,");
     Gen(dst, tmp);
     return 0;
 }
@@ -227,9 +227,9 @@ int print(codelist *dst, char *prog_name)
     printf("(0) (program,%s,-,-)\n", prog_name);
     for (i = 1; i < dst->linecnt; i++)
     {
-        if (!strcmp(dst->code[i], "(j, -, - ,"))
+        if (!strcmp(dst->code[i], "(j, -, -,"))
         {
-            printf("(%d)   (j, -, - , %d)\n", i, dst->linecnt);
+            printf("(%d)   (j, -, -, %d)\n", i, dst->linecnt);
         }
         else
             printf("(%d)   %s\n", i, dst->code[i]);
