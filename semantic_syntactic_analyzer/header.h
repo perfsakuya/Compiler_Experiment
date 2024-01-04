@@ -224,17 +224,17 @@ int backpatch(codelist *dst, instrlist *list, int instrno)
 int print(codelist *dst, char *prog_name)
 {
     int i;
-    printf("(0)   (program,%s,-,-)\n", prog_name);
+    printf("(0)\t(program,%s,-,-)\n", prog_name);
     for (i = 1; i < dst->linecnt; i++)
     {
         if (!strcmp(dst->code[i], "( j, -, -,"))
         {
-            printf("(%d)   ( j, -, -, %d)\n", i, dst->linecnt);
+            printf("(%d)\t( j, -, -, %d)\n", i, dst->linecnt);
         }
         else
-            printf("(%d)   %s\n", i, dst->code[i]);
+            printf("(%d)\t%s\n", i, dst->code[i]);
     }
-    printf("(%d)   %s\n", i, "(sys, -, -, -)");
+    printf("(%d)\t%s\n", i, "(sys, -, -, -)");
     return 1;
 }
 

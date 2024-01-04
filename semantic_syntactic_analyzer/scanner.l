@@ -3,12 +3,14 @@
 #include <stdlib.h>
 #include <string.h>
 #include "y.tab.h" // 由 yacc -d 生成
-#define MAX_SIZE 100
-int wordcount = 0;
+// #define MAX_SIZE 100 // 词法分析中使用
+// int wordcount = 0; // 词法分析中使用
 %}
 %option yylineno
 letter      [A-Za-z]
 digit       [0-9]
+ // 空格
+ws	[delim]+ 
  // <标识符> → <字母>│<标识符> <数字>│<标识符> <字母>
 identifier {letter}({letter}|{digit})*
  // identifier ({letter}|_){letter}({letter}|{digit}|_)* // 貌似会产生奇怪的bug
@@ -23,8 +25,8 @@ comment [/][*].*[*][/]
 false_comment [/][*].*
 %%
 
-[ \t\r\a]+     ; // 空白字符
-[\n]         return LF; // 换行符
+[ \t\r\a]+   ; // 空白字符
+[\n]         ; // 换行符
 and          return AND;
 array        return ARR;
 begin        return BEG;
@@ -72,29 +74,24 @@ write        return WRITE;
 "/"          return DIV;
 "/*"         return LCOMMENT;
 ":"          return COLON;
-":="         return ASSIGNMENT;
+":="         { filloperator(&yylval, yytext); return ASSIGN; }
 ";"          return SEMI;
-"<"          return LT;
-"<="         return LE;
-"<>"         return NE;
-"="          return EQ;
-">"          return RT;
-">="         return RE;
+"<"|"<="|">"|">="|"!="|"="    { filloperator(&yylval, yytext); return( RELOP ); }
 "["          return LC;
 "]"          return RC;
 
-
+{ws}    { }
 {identifier} {  // 标识符
-
-    yylval.str = strdup(yytext);
+    // yylval.str = strdup(yytext); // 弃用
+    filllexeme(&yylval, yytext);
     return id;
 }
-{integer}    {
-    yylval.num = atoi(yytext); 
-    return INTEGER;
+{integer}    { 
+    // yylval.num = atoi(yytext);  // 弃用
+    filllexeme(&yylval, yytext);
+    return INTEGER; 
 }
 {char_const} { //字符常数
-
     return TRUECHAR;
 }
 {false_char_const} { //错误字符常数
@@ -109,14 +106,13 @@ write        return WRITE;
     printf("Wrong Comment Format: %s\n", yytext); 
     return FALSECOMMENT;
 }
-
 . {  //其他非法字符
     printf("Illegal character: %s\n",yytext);
+    yyerror(); // 语法分析错误，直接退出
     return ILLEGALCHR;
 }
 
 %%
-
 
 // // 定义键值对的结构体
 // struct KeyValue {
