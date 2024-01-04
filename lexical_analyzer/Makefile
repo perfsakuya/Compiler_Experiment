@@ -1,5 +1,5 @@
 CC=gcc
-LEX=win_flex
+LEX=flex
 RM=del
 
 all: scanner
