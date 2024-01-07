@@ -24,9 +24,9 @@ extern int iserror = 0;
 %left ADD SUB
 %left MUL DIV 
 
-%left OR
 %left AND
-%right NOT
+%left OR
+%left NOT
 %left '+' '-'
 %left '*' '/'
 %right '='
