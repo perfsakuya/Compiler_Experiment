@@ -39,17 +39,25 @@ extern int iserror = 0;
 
 // ---------------------------1 程序定义--------------------------------------
 // 1.1 <程序> → program <标识符> ; | program
-program : PROGRAM program_name SEMI program
-        
-            | VAR var_definition program
+
+program : PROGRAM program_name SEMI VAR var_definition BEG statement
             {
-                // printf("\033[36m[info]\033[0m Variable Declaration: of type integer.\n"); // 只作提示，以后要删除
-            }
-            | BEG statement
-            {
-                // printf("\033[36m[info]\033[0m BEGIN\n"); // 只作提示，以后要删除
+                // printf("\033[36m[info]\033[0m Start analyzing.\n"); // 只作提示，以后要删除
             }
             ;
+
+// 以下是另一种实现方法，两种都可以顺利完成识别
+// program : PROGRAM program_name SEMI next_a
+        
+// next_a  : VAR var_definition next_b
+//             {
+//                 // printf("\033[36m[info]\033[0m Variable Declaration: type integer.\n"); // 只作提示，以后要删除
+//             }
+// next_b  : BEG statement
+//             {
+//                 // printf("\033[36m[info]\033[0m BEGIN\n"); // 只作提示，以后要删除
+//             }
+//             ;
 
 program_name : id {
     prog_name = $1.lexeme;
